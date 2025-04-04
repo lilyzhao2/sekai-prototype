@@ -67,6 +67,23 @@ const StoryCard = ({ story, index }: { story: Story, index: number }) => {
             <Text style={styles.storyFullTitle}>{story.title}</Text>
             <Text style={styles.storyFullAuthor}>by {story.author || 'Anonymous'}</Text>
             
+            <View style={styles.storyMetrics}>
+              <View style={styles.metricItem}>
+                <Text style={styles.metricValue}>{story.wordCount ? (story.wordCount / 1000).toFixed(1) : '2.5'}K</Text>
+                <Text style={styles.metricLabel}>WORDS</Text>
+              </View>
+              <View style={styles.metricDivider} />
+              <View style={styles.metricItem}>
+                <Text style={styles.metricValue}>{story.chapters}</Text>
+                <Text style={styles.metricLabel}>CHAPTERS</Text>
+              </View>
+              <View style={styles.metricDivider} />
+              <View style={styles.metricItem}>
+                <Text style={styles.metricValue}>{story.views ? (story.views / 1000).toFixed(1) : '4.5'}K</Text>
+                <Text style={styles.metricLabel}>VIEWS</Text>
+              </View>
+            </View>
+            
             <View style={styles.storyTextContent}>
               {displayContent.map((paragraph, i) => {
                 if (paragraph === "") {
@@ -95,10 +112,7 @@ const StoryCard = ({ story, index }: { story: Story, index: number }) => {
           <View style={styles.storyMeta}>
             <View style={styles.storyMetaInfo}>
               <Text style={styles.storyMetaBadge}>
-                {story.completed ? 'COMPLETED' : 'ONGOING'} • CH {story.chapters}
-              </Text>
-              <Text style={styles.storyMetaStats}>
-                {story.wordCount ? `${(story.wordCount / 1000).toFixed(1)}K words` : '2.5K words'} • {story.views ? `${(story.views / 1000).toFixed(1)}K views` : '4.5K views'}
+                {story.completed ? 'COMPLETED' : 'ONGOING'}
               </Text>
             </View>
           </View>
@@ -382,7 +396,7 @@ const styles = StyleSheet.create({
   storyFullAuthor: {
     fontSize: 16,
     color: 'white',
-    marginBottom: 20,
+    marginBottom: 14,
     textShadowColor: 'rgba(0,0,0,0.8)',
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 2,
@@ -437,9 +451,40 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     marginBottom: 4,
   },
-  storyMetaStats: {
+  storyMetrics: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    marginBottom: 20,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    borderRadius: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+  },
+  metricItem: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 5,
+  },
+  metricValue: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+    textShadowColor: 'rgba(0,0,0,0.5)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 1,
+  },
+  metricLabel: {
     color: 'rgba(255,255,255,0.7)',
-    fontSize: 12,
+    fontSize: 10,
+    letterSpacing: 1,
+    marginTop: 2,
+  },
+  metricDivider: {
+    width: 1,
+    height: 30,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    marginHorizontal: 14,
   },
   sideActionButtons: {
     position: 'absolute',
