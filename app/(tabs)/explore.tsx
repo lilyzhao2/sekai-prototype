@@ -1,109 +1,298 @@
-import { StyleSheet, Image, Platform } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, ScrollView, Image, TouchableOpacity, Text, View, TextInput } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Collapsible } from '@/components/Collapsible';
-import { ExternalLink } from '@/components/ExternalLink';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { IconSymbol } from '@/components/ui/IconSymbol';
+export default function InteractScreen() {
+  const [selectedTab, setSelectedTab] = useState('played');
+  const [message, setMessage] = useState('');
 
-export default function TabTwoScreen() {
+  const notifications = [
+    {
+      id: '1',
+      title: 'Notifications',
+      subtitle: 'See notifications here.',
+      image: { uri: 'https://placehold.co/60x60/009688/white?text=Bell' },
+      time: '',
+    },
+  ];
+
+  const interactions = [
+    {
+      id: '2',
+      title: 'Kryptonians and the Dark Knight',
+      subtitle: 'who am I ?',
+      image: { uri: 'https://placehold.co/60x60/202020/white?text=Space' },
+      time: '1d',
+    },
+    {
+      id: '3',
+      title: 'Falling For Captain Marvel\'s Charm',
+      subtitle: 'And second... I\'d like to hear more about your day.',
+      image: { uri: 'https://placehold.co/60x60/f16522/white?text=CM' },
+      time: '2d',
+    },
+  ];
+
+  // For the "For You" tab content (shown in other screenshot)
+  const forYouContent = {
+    characterName: 'Spider-Man',
+    message: '*Tugging nervously at his mask, exposing his flushed cheeks* Wow, that was... enthusiastic! I mean, great! I just didn\'t think someone like you would actually say yes to someone like me.',
+    storyTitle: 'Spider-Man\'s Scarlet Crush',
+    author: '@unknown',
+    image: { uri: 'https://placehold.co/350x500/e51c23/white?text=Spider-Man' },
+    likes: 2,
+  };
+
+  // Render the "Played" tab content
+  const renderPlayedTab = () => (
+    <ScrollView style={styles.tabContent}>
+      {[...notifications, ...interactions].map(item => (
+        <TouchableOpacity key={item.id} style={styles.interactionItem}>
+          <Image source={item.image} style={styles.interactionImage} />
+          <View style={styles.interactionTextContainer}>
+            <Text style={styles.interactionTitle}>{item.title}</Text>
+            <Text style={styles.interactionSubtitle}>{item.subtitle}</Text>
+          </View>
+          {item.time ? (
+            <Text style={styles.timeText}>{item.time}</Text>
+          ) : (
+            <Text style={styles.arrowIcon}>›</Text>
+          )}
+        </TouchableOpacity>
+      ))}
+    </ScrollView>
+  );
+
+  // Render the "Liked" tab content (simplified)
+  const renderLikedTab = () => (
+    <View style={styles.emptyTabContent}>
+      <Text style={styles.emptyTabText}>No liked stories yet</Text>
+    </View>
+  );
+
+  // Render the "For You" tab content (from the final screenshot)
+  const renderForYouTab = () => (
+    <View style={styles.forYouContainer}>
+      <Image source={forYouContent.image} style={styles.forYouImage} />
+      <View style={styles.messageOverlay}>
+        <Text style={styles.characterName}>{forYouContent.characterName}</Text>
+        <Text style={styles.messageText}>{forYouContent.message}</Text>
+        <View style={styles.storyInfoContainer}>
+          <Text style={styles.storyTitle}>{forYouContent.storyTitle}</Text>
+          <Text style={styles.authorName}>{forYouContent.author}</Text>
+        </View>
+        <View style={styles.interactionBar}>
+          <TouchableOpacity style={styles.interactionButton}>
+            <Text style={styles.heartIcon}>❤️</Text>
+            <Text style={styles.likeCount}>{forYouContent.likes}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.interactionButton}>
+            <Text style={styles.shareIcon}>➡️</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.interactionButton}>
+            <Text style={styles.timeIcon}>🕒</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.messageInput}
+            placeholder="Say something..."
+            placeholderTextColor="#888"
+            value={message}
+            onChangeText={setMessage}
+          />
+        </View>
+      </View>
+    </View>
+  );
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={
-        <IconSymbol
-          size={310}
-          color="#808080"
-          name="chevron.left.forwardslash.chevron.right"
-          style={styles.headerImage}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Explore</ThemedText>
-      </ThemedView>
-      <ThemedText>This app includes example code to help you get started.</ThemedText>
-      <Collapsible title="File-based routing">
-        <ThemedText>
-          This app has two screens:{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
-        </ThemedText>
-        <ThemedText>
-          The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-          sets up the tab navigator.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Android, iOS, and web support">
-        <ThemedText>
-          You can open this project on Android, iOS, and the web. To open the web version, press{' '}
-          <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
-        </ThemedText>
-      </Collapsible>
-      <Collapsible title="Images">
-        <ThemedText>
-          For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
-          different screen densities
-        </ThemedText>
-        <Image source={require('@/assets/images/react-logo.png')} style={{ alignSelf: 'center' }} />
-        <ExternalLink href="https://reactnative.dev/docs/images">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Custom fonts">
-        <ThemedText>
-          Open <ThemedText type="defaultSemiBold">app/_layout.tsx</ThemedText> to see how to load{' '}
-          <ThemedText style={{ fontFamily: 'SpaceMono' }}>
-            custom fonts such as this one.
-          </ThemedText>
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/versions/latest/sdk/font">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Light and dark mode components">
-        <ThemedText>
-          This template has light and dark mode support. The{' '}
-          <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
-          what the user's current color scheme is, and so you can adjust UI colors accordingly.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Animations">
-        <ThemedText>
-          This template includes an example of an animated component. The{' '}
-          <ThemedText type="defaultSemiBold">components/HelloWave.tsx</ThemedText> component uses
-          the powerful <ThemedText type="defaultSemiBold">react-native-reanimated</ThemedText>{' '}
-          library to create a waving hand animation.
-        </ThemedText>
-        {Platform.select({
-          ios: (
-            <ThemedText>
-              The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
-              component provides a parallax effect for the header image.
-            </ThemedText>
-          ),
-        })}
-      </Collapsible>
-    </ParallaxScrollView>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.tabsHeader}>
+        <TouchableOpacity 
+          style={[styles.tabButton, selectedTab === 'liked' && styles.activeTabButton]}
+          onPress={() => setSelectedTab('liked')}
+        >
+          <Text style={[styles.tabButtonText, selectedTab === 'liked' && styles.activeTabText]}>
+            Liked
+          </Text>
+          {selectedTab === 'liked' && <View style={styles.activeTabIndicator} />}
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={[styles.tabButton, selectedTab === 'played' && styles.activeTabButton]}
+          onPress={() => setSelectedTab('played')}
+        >
+          <Text style={[styles.tabButtonText, selectedTab === 'played' && styles.activeTabText]}>
+            Played
+          </Text>
+          {selectedTab === 'played' && <View style={styles.activeTabIndicator} />}
+        </TouchableOpacity>
+      </View>
+
+      {selectedTab === 'played' && renderPlayedTab()}
+      {selectedTab === 'liked' && renderLikedTab()}
+      {selectedTab === 'forYou' && renderForYouTab()}
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
+  container: {
+    flex: 1,
+    backgroundColor: '#121212',
   },
-  titleContainer: {
+  tabsHeader: {
     flexDirection: 'row',
-    gap: 8,
+    justifyContent: 'center',
+    paddingTop: 16,
+    paddingBottom: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#333',
+  },
+  tabButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    position: 'relative',
+  },
+  activeTabButton: {
+    // Style for active tab
+  },
+  tabButtonText: {
+    fontSize: 18,
+    color: '#888',
+  },
+  activeTabText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  activeTabIndicator: {
+    position: 'absolute',
+    bottom: -8,
+    left: 20,
+    right: 20,
+    height: 3,
+    backgroundColor: 'white',
+  },
+  tabContent: {
+    flex: 1,
+  },
+  interactionItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#333',
+  },
+  interactionImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    marginRight: 16,
+  },
+  interactionTextContainer: {
+    flex: 1,
+  },
+  interactionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: 4,
+  },
+  interactionSubtitle: {
+    fontSize: 14,
+    color: '#888',
+  },
+  timeText: {
+    fontSize: 14,
+    color: '#888',
+    marginLeft: 8,
+  },
+  arrowIcon: {
+    fontSize: 24,
+    color: '#888',
+    marginLeft: 8,
+  },
+  emptyTabContent: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyTabText: {
+    color: '#888',
+    fontSize: 16,
+  },
+  forYouContainer: {
+    flex: 1,
+    position: 'relative',
+  },
+  forYouImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  messageOverlay: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: 16,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+  },
+  characterName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: 8,
+  },
+  messageText: {
+    fontSize: 16,
+    color: 'white',
+    marginBottom: 16,
+  },
+  storyInfoContainer: {
+    marginBottom: 16,
+  },
+  storyTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  authorName: {
+    fontSize: 14,
+    color: '#888',
+  },
+  interactionBar: {
+    flexDirection: 'row',
+    marginBottom: 16,
+  },
+  interactionButton: {
+    marginRight: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  heartIcon: {
+    fontSize: 20,
+    marginRight: 4,
+  },
+  likeCount: {
+    color: 'white',
+    fontSize: 14,
+  },
+  shareIcon: {
+    fontSize: 20,
+  },
+  timeIcon: {
+    fontSize: 20,
+  },
+  inputContainer: {
+    backgroundColor: '#333',
+    borderRadius: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  messageInput: {
+    color: 'white',
+    fontSize: 16,
   },
 });
