@@ -82,7 +82,7 @@ const ExploreWorldsButton = () => {
   return (
     <TouchableOpacity
       style={styles.bottomActionButton}
-      onPress={() => router.push({pathname: '/(tabs)/explore'})}
+      onPress={() => router.push({pathname: '/(tabs)/stories'})}
     >
       <LinearGradient colors={['#888', '#BBB']} style={styles.bottomActionGradient}> 
         <Ionicons name="planet-outline" size={20} color="#000" />

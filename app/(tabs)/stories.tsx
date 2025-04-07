@@ -190,312 +190,155 @@ const StoryCard = ({ item, index }: { item: Story, index: number }) => {
   const router = useRouter();
   
   // Handle navigation based on content type
-  const navigateToContent = () => {
-    if (item.contentType === 'roleplay') {
-      router.push({
-        pathname: '/for-you',
-        params: { id: item.id }
-      });
-    } else if (item.contentType === 'story') {
-      router.push({
-        pathname: '/story-reader',
-        params: {
-          id: item.id,
-          platform: item.platform,
-          chapter: item.lastReadChapter || 1
-        }
-      });
-    } else if (item.contentType === 'sekai') {
-      router.push({
-        pathname: '/create',
-        params: { id: item.id }
-      });
-    }
+  const navigateToStoryReader = () => {
+    router.push({
+      pathname: '/story-reader',
+      params: {
+        id: item.id,
+        platform: item.platform,
+        chapter: item.lastReadChapter || 1
+      }
+    });
   };
 
-  // Render based on content type
-  if (item.contentType === 'roleplay') {
-    return <RoleplayCard item={item} index={index} onNavigate={navigateToContent} />;
-  } else if (item.contentType === 'story') {
-    return <FullStoryCard item={item} index={index} onNavigate={navigateToContent} />;
-  } else if (item.contentType === 'sekai') {
-    return <SekaiCard item={item} index={index} onNavigate={navigateToContent} />;
-  }
-  
-  return null;
-};
-
-// Roleplay card component
-const RoleplayCard = ({ item, index, onNavigate }: { item: Story, index: number, onNavigate: () => void }) => {
-  return (
-    <View style={[styles.storyFullCard, { backgroundColor: index % 2 === 0 ? '#121212' : '#0D0D0D' }]}>
-      <LinearGradient
-        colors={['rgba(0,0,0,0.7)', 'transparent', 'rgba(0,0,0,0.9)']}
-        locations={[0, 0.4, 1]}
-        style={styles.storyGradient}
-      >
-        <Image source={item.image} style={styles.storyBackgroundImage} />
-        
-        <SafeAreaView style={styles.storyContentContainer}>
-          <View style={styles.storyHeader}>
-            <View style={styles.platformIndicator}>
-              <Text style={styles.platformText}>{item.platform}</Text>
-            </View>
-          </View>
-          
-          <View style={styles.storyScrollContent}>
-            <Text style={styles.storyFullTitle}>{item.title}</Text>
-            <Text style={styles.storyFullAuthor}>by {item.author}</Text>
-            
-            {/* Dialogue content */}
-            <View style={styles.dialogueContainer}>
-              {item.dialogue?.map((entry, i) => (
-                <View key={i} style={styles.dialogueEntry}>
-                  <Image source={{ uri: entry.image }} style={styles.dialogueAvatar} />
-                  <View style={styles.dialogueBubble}>
-                    <Text style={styles.dialogueName}>{entry.character}</Text>
-                    <Text style={styles.dialogueText}>{entry.message}</Text>
-                  </View>
-                </View>
-              ))}
-            </View>
-          </View>
-          
-          <View style={styles.storyMeta}>
-            <View style={styles.storyMetaInfo}>
-              <View style={styles.storyMetaRow}>
-                <Text style={styles.storyMetaBadge}>
-                  ROLEPLAY
-                </Text>
-              </View>
-              <Text style={styles.storyMetaStats}>
-                {item.views ? `${(item.views / 1000).toFixed(1)}K views` : '4.5K views'} • {item.likes ? `${(item.likes / 1000).toFixed(1)}K likes` : '2.3K likes'}
-              </Text>
-              
-              <TouchableOpacity 
-                style={styles.fullReaderButton}
-                onPress={onNavigate}
-              >
-                <Text style={styles.fullReaderButtonText}>Continue Roleplay</Text>
-                <Ionicons name="chatbubbles-outline" size={16} color="white" style={{ marginLeft: 4 }} />
-              </TouchableOpacity>
-            </View>
-          </View>
-        </SafeAreaView>
-      </LinearGradient>
-    </View>
-  );
+  // Render only FullStoryCard now
+  return <FullStoryCard item={item} index={index} onNavigate={navigateToStoryReader} />;
 };
 
 // Full story card component
 const FullStoryCard = ({ item, index, onNavigate }: { item: Story, index: number, onNavigate: () => void }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const displayContent = isExpanded ? item.content : item.content?.slice(0, 3);
-  
-  return (
-    <View style={[styles.storyFullCard, { backgroundColor: index % 2 === 0 ? '#121212' : '#0D0D0D' }]}>
-      <LinearGradient
-        colors={['rgba(0,0,0,0.7)', 'transparent', 'rgba(0,0,0,0.9)']}
-        locations={[0, 0.4, 1]}
-        style={styles.storyGradient}
-      >
-        <Image source={item.image} style={styles.storyBackgroundImage} />
-        
-        <SafeAreaView style={styles.storyContentContainer}>
-          <View style={styles.storyHeader}>
-            <View style={styles.platformIndicator}>
-              <Text style={styles.platformText}>{item.platform}</Text>
-            </View>
-            {item.narrativeStage && (
-              <View style={[
-                styles.narrativeStageBadge, 
-                { 
-                  backgroundColor: 
-                    item.narrativeStage === 'beginning' ? '#4285F4' : 
-                    item.narrativeStage === 'middle' ? '#FBBC05' : '#EA4335' 
-                }
-              ]}>
-                <Text style={styles.narrativeStageText}>{item.narrativeStage.toUpperCase()}</Text>
-              </View>
-            )}
-          </View>
-          
-          <View style={styles.storyScrollContent}>
-            <Text style={styles.storyFullTitle}>{item.title}</Text>
-            <Text style={styles.storyFullAuthor}>by {item.author}</Text>
-            
-            {/* Progress indicator */}
-            {item.progress !== undefined && (
-              <View style={styles.progressContainer}>
-                <View style={styles.progressBar}>
-                  <View 
-                    style={[
-                      styles.progressFill, 
-                      { width: item.progress ? `${item.progress}%` : '0%' }
-                    ]} 
-                  />
-                </View>
-                <Text style={styles.progressText}>
-                  {item.progress}% · {item.lastReadChapter ? `Ch ${item.lastReadChapter}/${item.chapters}` : `0/${item.chapters}`}
-                </Text>
-              </View>
-            )}
-            
-            <View style={styles.storyTextContent}>
-              {displayContent?.map((paragraph, i) => {
-                if (paragraph === "") {
-                  return <View key={i} style={styles.paragraphSpacer} />;
-                }
-                return <Text key={i} style={styles.storyFullParagraph}>{paragraph}</Text>;
-              })}
-              
-              {!isExpanded && item.content && item.content.length > 3 && (
-                <TouchableOpacity 
-                  style={styles.expandButton}
-                  onPress={() => setIsExpanded(true)}
-                >
-                  <Text style={styles.expandButtonText}>Read More</Text>
-                </TouchableOpacity>
-              )}
-            </View>
-          </View>
-          
-          <View style={styles.storyMeta}>
-            <View style={styles.storyMetaInfo}>
-              <View style={styles.storyMetaRow}>
-                <Text style={styles.storyMetaBadge}>
-                  {item.completed ? 'COMPLETED' : 'ONGOING'} • CH {item.chapters}
-                </Text>
-              </View>
-              <Text style={styles.storyMetaStats}>
-                {item.wordCount ? `${(item.wordCount / 1000).toFixed(1)}K words` : '2.5K words'} • {item.views ? `${(item.views / 1000).toFixed(1)}K views` : '4.5K views'}
-              </Text>
-              
-              <TouchableOpacity 
-                style={styles.fullReaderButton}
-                onPress={onNavigate}
-              >
-                <Text style={styles.fullReaderButtonText}>Open Full Reader</Text>
-                <Ionicons name="book-outline" size={16} color="white" style={{ marginLeft: 4 }} />
-              </TouchableOpacity>
-            </View>
-          </View>
-        </SafeAreaView>
-      </LinearGradient>
-    </View>
-  );
-};
 
-// Sekai world card component
-const SekaiCard = ({ item, index, onNavigate }: { item: Story, index: number, onNavigate: () => void }) => {
+  // Function to get the first paragraph preview
+  const getParagraphPreview = (content?: string[]): string => {
+    if (!content || content.length === 0) {
+      return "";
+    }
+    const firstNonEmptyIndex = content.findIndex(line => line.trim() !== "");
+    if (firstNonEmptyIndex === -1) {
+      return "";
+    }
+    
+    let preview = content[firstNonEmptyIndex];
+    
+    // Optionally add the next non-empty line if it exists immediately after
+    // const secondNonEmptyIndex = content.findIndex((line, idx) => line.trim() !== "" && idx > firstNonEmptyIndex);
+    // if (secondNonEmptyIndex === firstNonEmptyIndex + 1) {
+    //    preview += " " + content[secondNonEmptyIndex];
+    // }
+
+    // Let's just use the first non-empty line for now to keep it concise
+    return preview;
+  };
+
+  const paragraphPreview = getParagraphPreview(item.content);
+
   return (
-    <View style={[styles.storyFullCard, { backgroundColor: index % 2 === 0 ? '#121212' : '#0D0D0D' }]}>
+    <View style={styles.storyFullCard}>
+      <Image source={item.image} style={styles.storyBackgroundImage} />
       <LinearGradient
-        colors={['rgba(0,0,0,0.7)', 'transparent', 'rgba(0,0,0,0.9)']}
-        locations={[0, 0.4, 1]}
+        colors={['transparent', 'rgba(0,0,0,0.85)']} // Slightly darker gradient
+        locations={[0.55, 1]} // Adjust gradient start
         style={styles.storyGradient}
-      >
-        <Image source={item.image} style={styles.storyBackgroundImage} />
-        
-        <SafeAreaView style={styles.storyContentContainer}>
-          <View style={styles.storyHeader}>
-            <View style={[styles.platformIndicator, {backgroundColor: 'rgba(75, 223, 195, 0.3)'}]}>
-              <Text style={[styles.platformText, {color: '#4BDFC3'}]}>
-                {item.platform}
-              </Text>
-            </View>
-          </View>
-          
-          <View style={styles.storyScrollContent}>
-            <Text style={styles.storyFullTitle}>{item.title}</Text>
-            <Text style={styles.storyFullAuthor}>by {item.author}</Text>
-            
-            <View style={styles.sekaiStatsContainer}>
-              <View style={styles.sekaiStat}>
-                <Ionicons name="people-outline" size={20} color="#4BDFC3" />
-                <Text style={styles.sekaiStatValue}>{item.charactersCount}</Text>
-                <Text style={styles.sekaiStatLabel}>Characters</Text>
+      />
+      <SafeAreaView style={styles.storyContentContainer}>
+        {/* Interaction Icons Side Bar */}
+        <View style={styles.sideBar}>
+           <TouchableOpacity style={styles.sideBarButton}>
+            <Ionicons name="heart-outline" size={28} color="white" />
+            {/* Moved like count to overlay */}
+           </TouchableOpacity>
+          <TouchableOpacity style={styles.sideBarButton}>
+            <Ionicons name="chatbubble-outline" size={28} color="white" />
+            <Text style={styles.sideBarText}>Discuss</Text> 
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.sideBarButton}>
+            <Ionicons name="share-social-outline" size={28} color="white" />
+            {/* <Text style={styles.sideBarText}>Share</Text> // Text optional */}
+          </TouchableOpacity>
+           <TouchableOpacity style={styles.sideBarButton}>
+            <Ionicons name="bookmark-outline" size={28} color="white" />
+            {/* <Text style={styles.sideBarText}>Save</Text> // Text optional */}
+          </TouchableOpacity>
+        </View>
+
+        {/* Bottom Info Overlay - Adjusted for fit */}
+        <View style={styles.bottomOverlay}>
+          <Text style={styles.overlayPlatform}>
+            {item.platform?.toUpperCase()} • {item.completed ? 'COMPLETED' : 'ONGOING'} • CH {item.chapters}
+          </Text>
+          <Text style={styles.overlayTitle} numberOfLines={2} ellipsizeMode="tail">{item.title}</Text>
+          <Text style={styles.overlayAuthor}>
+            by {item.author} • {(item.views || 0) / 1000 >= 1 ? `${((item.views || 0) / 1000).toFixed(1)}K` : item.views} views • {(item.likes || 0) / 1000 >= 1 ? `${((item.likes || 0) / 1000).toFixed(1)}K` : item.likes} likes
+          </Text>
+          {item.progress !== undefined && item.progress > 0 && ( // Show progress only if started
+            <View style={styles.inlineProgressContainer}>
+              <View style={styles.inlineProgressBar}>
+                <View style={[styles.inlineProgressFill, { width: `${item.progress}%` }]} />
               </View>
-              <View style={styles.sekaiStat}>
-                <Ionicons name="git-branch-outline" size={20} color="#4BDFC3" />
-                <Text style={styles.sekaiStatValue}>{item.storylinesCount}</Text>
-                <Text style={styles.sekaiStatLabel}>Storylines</Text>
-              </View>
-              <View style={styles.sekaiStat}>
-                <Ionicons name="heart-outline" size={20} color="#4BDFC3" />
-                <Text style={styles.sekaiStatValue}>{(item.likes! / 1000).toFixed(1)}K</Text>
-                <Text style={styles.sekaiStatLabel}>Likes</Text>
-              </View>
+              <Text style={styles.inlineProgressText}>{item.progress}% Read</Text>
             </View>
-            
-            <View style={styles.sekaiDescriptionContainer}>
-              <Text style={styles.sekaiDescription}>{item.worldDescription}</Text>
-            </View>
-          </View>
-          
-          <View style={styles.storyMeta}>
-            <View style={styles.storyMetaInfo}>
-              <View style={styles.storyMetaRow}>
-                <Text style={styles.storyMetaBadge}>
-                  WORLD
-                </Text>
-              </View>
-              <Text style={styles.storyMetaStats}>
-                {item.views ? `${(item.views / 1000).toFixed(1)}K views` : '5K views'} • {item.genre?.join(' • ')}
-              </Text>
-              
-              <TouchableOpacity 
-                style={[styles.fullReaderButton, {backgroundColor: 'rgba(75, 223, 195, 0.3)'}]}
-                onPress={onNavigate}
-              >
-                <Text style={[styles.fullReaderButtonText, {color: '#4BDFC3'}]}>Explore World</Text>
-                <Ionicons name="planet-outline" size={16} color="#4BDFC3" style={{ marginLeft: 4 }} />
-              </TouchableOpacity>
-            </View>
-          </View>
-        </SafeAreaView>
-      </LinearGradient>
+          )}
+          {/* Paragraph Preview */}
+          {paragraphPreview !== "" && (
+            <Text style={styles.overlayHookText} numberOfLines={3} ellipsizeMode="tail">
+              {paragraphPreview}
+            </Text>
+          )}
+          {/* TODO: Add Roleplay/Sekai connection display here if data model supports it */}
+          <TouchableOpacity style={styles.overlayActionButton} onPress={onNavigate}>
+             <Ionicons name="book-outline" size={16} color="white" style={{ marginRight: 6 }} />
+            <Text style={styles.overlayActionButtonText}>
+                {item.progress !== undefined && item.progress > 0 ? 'Continue Reading' : 'Start Reading'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
     </View>
   );
 };
 
 export default function StoriesScreen() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<string>('for-you');
+  // const [activeTab, setActiveTab] = useState<string>('for-you'); // State seems unused
   const viewRef = useRef(null);
+
+  // Filter stories data to only include 'story' type
+  const filteredStories = stories.filter(story => story.contentType === 'story');
   
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
       
       <SafeAreaView style={styles.safeAreaContainer}>
+        {/* Header can remain if needed */}
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Stories</Text>
+          <Text style={styles.headerTitle}>Discover Stories</Text> 
           <TouchableOpacity 
             style={styles.searchButton}
             onPress={() => router.push({
-              pathname: '/',
+              pathname: '/', // Assuming search is on the home/root screen
               params: { search: 'true' }
             })}
           >
-            <Ionicons name="search" size={24} color="white" />
+            <Ionicons name="search" size={22} color="white" />
           </TouchableOpacity>
         </View>
         
         {/* Main content */}
         <FlatList
-          data={stories}
+          data={filteredStories} // Use filtered data
           renderItem={({ item, index }) => (
             <StoryCard item={item} index={index} />
           )}
           keyExtractor={item => item.id}
-          snapToInterval={height}
+          snapToInterval={height} // Keeps the full-screen snap
           decelerationRate="fast"
           showsVerticalScrollIndicator={false}
+          pagingEnabled // Ensures snapping to full pages
           viewabilityConfig={{
-            itemVisiblePercentThreshold: 50
+            itemVisiblePercentThreshold: 50 // Keep this for potential future logic
           }}
-          contentContainerStyle={styles.listContainer}
+          contentContainerStyle={styles.listContainer} // Ensure this doesn't add extra padding
           ref={viewRef}
         />
       </SafeAreaView>
@@ -510,42 +353,49 @@ const styles = StyleSheet.create({
   },
   safeAreaContainer: {
     flex: 1,
+    // Remove potential top padding if header is absolutely positioned or part of the card
   },
   header: {
+    position: 'absolute', // Make header overlay on top
+    top: Platform.OS === 'android' ? StatusBar.currentHeight : 44, // Adjust top based on OS status bar
+    left: 0,
+    right: 0,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    backgroundColor: 'rgba(0,0,0,0.7)',
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    backgroundColor: 'rgba(0,0,0,0.3)', // Semi-transparent background
     zIndex: 10,
   },
   headerTitle: {
-    fontSize: 20,
+    fontSize: 18, // Slightly smaller header title
     fontWeight: 'bold',
     color: 'white',
+     textShadowColor: 'rgba(0, 0, 0, 0.5)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
   searchButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255,255,255,0.12)',
-    justifyContent: 'center',
-    alignItems: 'center',
+     padding: 5, // Make touch target slightly larger if needed
   },
   listContainer: {
-    flexGrow: 1,
+    // Removed flexGrow: 1 as FlatList takes full height by default when inside a flex:1 container
     width: '100%',
   },
   storyFullCard: {
     width: width,
-    height: height,
+    height: height, // Ensure full screen height
     position: 'relative',
+    backgroundColor: '#050505', // Slightly off-black background
+    justifyContent: 'flex-end', // Align content container to bottom
   },
   storyGradient: {
     position: 'absolute',
-    width: '100%',
-    height: '100%',
+    left: 0,
+    right: 0,
+    bottom: 0, 
+    height: height * 0.5, // Gradient covers lower half for better text readability
     zIndex: 1,
   },
   storyBackgroundImage: {
@@ -553,225 +403,121 @@ const styles = StyleSheet.create({
     height: '100%',
     position: 'absolute',
     resizeMode: 'cover',
-    opacity: 0.7,
+    opacity: 0.85, // Slightly reduce image opacity if needed behind text
   },
   storyContentContainer: {
-    flex: 1,
-    paddingHorizontal: 20,
-    justifyContent: 'space-between',
+    // Removed flex: 1 and justifyContent, handled by storyFullCard
+    position: 'absolute', // Position absolutely within the card
+    bottom: Platform.OS === 'ios' ? 50 : 60, // Adjusted bottom padding for nav bar
+    left: 0,
+    right: 0,
     zIndex: 2,
-    width: '100%',
+    paddingHorizontal: 15,
   },
-  storyHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  // Styles for TikTok layout - Adjusted
+  sideBar: {
+    position: 'absolute',
+    right: 5, // Closer to edge
+    bottom: 10, // Relative to storyContentContainer bottom padding now
     alignItems: 'center',
-    paddingVertical: 10,
+    zIndex: 3,
   },
-  platformIndicator: {
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
+  sideBarButton: {
+    alignItems: 'center',
+    marginBottom: 20, // Slightly less margin
   },
-  platformText: {
+  sideBarText: {
     color: 'white',
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  narrativeStageBadge: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-  },
-  narrativeStageText: {
-    color: 'white',
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  storyScrollContent: {
-    flex: 1,
-    paddingBottom: 10,
-    width: '100%',
-  },
-  storyFullTitle: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: 'white',
-    marginBottom: 6,
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 3,
-  },
-  storyFullAuthor: {
-    fontSize: 16,
-    color: '#CCC',
-    marginBottom: 16,
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 3,
-  },
-  progressContainer: {
-    marginBottom: 20,
-    width: '100%',
-  },
-  progressBar: {
-    height: 4,
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    borderRadius: 2,
-    marginBottom: 6,
-    overflow: 'hidden',
-    width: '100%',
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: '#4BDFC3',
-    borderRadius: 2,
-  },
-  progressText: {
-    fontSize: 14,
-    color: '#CCC',
-  },
-  storyTextContent: {
-    marginTop: 10,
-    width: '100%',
-  },
-  storyFullParagraph: {
-    fontSize: 16,
-    lineHeight: 24,
-    color: 'white',
-    marginBottom: 14,
-    textShadowColor: 'rgba(0, 0, 0, 0.5)',
+    fontSize: 11, // Smaller text
+    fontWeight: '500',
+    marginTop: 3,
+    textShadowColor: 'rgba(0, 0, 0, 0.6)',
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 2,
   },
-  paragraphSpacer: {
-    height: 14,
+  bottomOverlay: {
+     width: '83%', // Adjusted width to give sidebar space
+     paddingBottom: 5, // Add a little padding at the very bottom
   },
-  expandButton: {
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    paddingVertical: 10,
-    borderRadius: 20,
-    alignItems: 'center',
-    marginVertical: 16,
-    width: '100%',
+  overlayPlatform: {
+      color: '#DDD', // Lighter grey
+      fontSize: 12, // Smaller font size
+      fontWeight: '600', // Slightly bolder
+      marginBottom: 4,
+      textTransform: 'uppercase',
+      textShadowColor: 'rgba(0, 0, 0, 0.8)',
+      textShadowOffset: { width: 0, height: 1 },
+      textShadowRadius: 2,
   },
-  expandButtonText: {
-    color: 'white',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  storyMeta: {
-    marginTop: 16,
-    paddingBottom: Platform.OS === 'ios' ? 30 : 16,
-    width: '100%',
-  },
-  storyMetaInfo: {
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    borderRadius: 12,
-    padding: 14,
-    width: '100%',
-  },
-  storyMetaRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  storyMetaBadge: {
-    color: '#CCC',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  storyMetaStats: {
-    color: '#999',
-    fontSize: 14,
-    marginBottom: 14,
-  },
-  fullReaderButton: {
-    flexDirection: 'row',
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-  },
-  fullReaderButtonText: {
-    color: 'white',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  // Dialogue styles for roleplay
-  dialogueContainer: {
-    marginTop: 10,
-    marginBottom: 20,
-    width: '100%',
-  },
-  dialogueEntry: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: 16,
-    width: '100%',
-  },
-  dialogueAvatar: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    marginRight: 10,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.2)',
-  },
-  dialogueBubble: {
-    backgroundColor: 'rgba(40,40,40,0.8)',
-    borderRadius: 16,
-    padding: 12,
-    flex: 1,
-    maxWidth: '85%',
-  },
-  dialogueName: {
-    color: '#4BDFC3',
-    fontSize: 14,
+  overlayTitle: {
+    fontSize: 20, // Slightly smaller title
     fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  dialogueText: {
     color: 'white',
-    fontSize: 16,
-    lineHeight: 22,
+    marginBottom: 5, // Less margin
+    lineHeight: 24, // Adjust line height for multi-line titles
+    textShadowColor: 'rgba(0, 0, 0, 0.8)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
   },
-  // Sekai world styles
-  sekaiStatsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginVertical: 20,
-    paddingHorizontal: 10,
-    width: '100%',
+  overlayAuthor: {
+    fontSize: 13, // Smaller font size
+    color: '#EEE',
+    marginBottom: 8, // Less margin
+    textShadowColor: 'rgba(0, 0, 0, 0.8)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
+    lineHeight: 18,
   },
-  sekaiStat: {
-    alignItems: 'center',
+  overlayActionButton: {
+      flexDirection: 'row', // Icon and text side-by-side
+      backgroundColor: 'rgba(255, 255, 255, 0.25)', // Slightly more visible
+      paddingVertical: 8, // Smaller button
+      paddingHorizontal: 12,
+      borderRadius: 6,
+      marginTop: 8, // Less margin
+      alignSelf: 'flex-start', 
+      alignItems: 'center', // Center icon and text
   },
-  sekaiStatValue: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginVertical: 4,
+  overlayActionButtonText: {
+      color: 'white',
+      fontSize: 13, // Smaller text
+      fontWeight: '600',
   },
-  sekaiStatLabel: {
-    color: '#999',
-    fontSize: 12,
+  overlayHookText: {
+      fontSize: 13, // Smaller font size
+      color: '#E5E5E5', // Slightly brighter
+      marginTop: 5, // Less margin
+      marginBottom: 10, // Less margin
+      lineHeight: 18, // Adjust line height
+      textShadowColor: 'rgba(0, 0, 0, 0.8)',
+      textShadowOffset: { width: 0, height: 1 },
+      textShadowRadius: 2,
   },
-  sekaiDescriptionContainer: {
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    borderRadius: 12,
-    padding: 16,
-    marginVertical: 10,
-    width: '100%',
+  // Inline progress for FullStoryCard
+  inlineProgressContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 8, // Less margin
+      marginTop: 2, // Add a little top margin
+      width: '100%',
   },
-  sekaiDescription: {
-    color: 'white',
-    fontSize: 16,
-    lineHeight: 24,
+  inlineProgressBar: {
+      height: 2.5, // Thinner bar
+      backgroundColor: 'rgba(255,255,255,0.3)',
+      borderRadius: 1.5,
+      flex: 1, 
+      marginRight: 6,
   },
+  inlineProgressFill: {
+      height: '100%',
+      backgroundColor: '#4BDFC3', 
+      borderRadius: 1.5,
+  },
+  inlineProgressText: {
+      fontSize: 11, // Smaller text
+      color: '#DDD',
+      fontWeight: '500',
+  },
+
+  // REMOVED Sekai related styles: sekaiInlineStats, sekaiInlineStatText
 }); 
