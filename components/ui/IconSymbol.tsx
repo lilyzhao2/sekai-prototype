@@ -17,6 +17,8 @@ const MAPPING = {
   'plus': 'add',
   'text.bubble.fill': 'chat',
   'person.fill': 'person',
+  'book.fill': 'book',
+  'globe.americas.fill': 'public',
 } as Partial<
   Record<
     import('expo-symbols').SymbolViewProps['name'],
