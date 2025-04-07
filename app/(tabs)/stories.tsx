@@ -74,13 +74,13 @@ const stories: Story[] = [
       }
     ]
   },
-  // Full story
+  // Full story - Updated Content & Platform
   {
     id: '2',
     title: 'The Last Guardian',
     image: { uri: 'https://images.unsplash.com/photo-1618336753974-aae8e04506aa?q=80&w=1170&auto=format&fit=crop' },
     chapters: 15,
-    platform: 'Story',
+    platform: 'Sekai Originals', // Changed platform
     author: 'MysticWriter',
     genre: ['Fantasy', 'Adventure'],
     completed: false,
@@ -89,11 +89,11 @@ const stories: Story[] = [
     likes: 3800,
     contentType: 'story',
     content: [
-      "The air was thick with magic as Thorne approached the ancient forest.",
+      "The air hummed, thick with an ancient energy Thorne hadn\'t felt since the Sundering. Before him, the Whispering Woods pulsed, not with the gentle life he remembered, but with a low, resonant thrum that vibrated deep within his bones.",
       "",
-      "\"We shouldn't be here,\" whispered Elara, clutching her staff tightly. \"This place is forbidden for a reason.\"",
+      "He gripped the hilt of Lumina, its familiar cool metal a stark contrast to the unnatural warmth radiating from the treeline. Elara was right, this place felt wrong, corrupted. But the faint, desperate plea he'd heard on the wind couldn't be ignored. Someone, or something, within these twisted boughs needed the last Guardian.",
       "",
-      "But Thorne had no choice. As the last guardian of the sacred trees, only he could sense the growing darkness that threatened to consume everything."
+      "Taking a deep breath that tasted of ozone and damp earth, Thorne stepped beneath the canopy, plunging himself into the encroaching shadows."
     ],
     narrativeStage: 'beginning',
     progress: 35,
@@ -143,13 +143,13 @@ const stories: Story[] = [
       }
     ]
   },
-  // Full story
+  // Full story - Updated Content & Platform
   {
     id: '5',
     title: 'The Dragon\'s Chosen',
     image: { uri: 'https://images.unsplash.com/photo-1577493340887-b7bfff550145?q=80&w=980&auto=format&fit=crop' },
     chapters: 24,
-    platform: 'Story',
+    platform: 'AO3', // Changed platform
     author: 'DragonTales',
     genre: ['Fantasy', 'Romance'],
     completed: true,
@@ -158,11 +158,11 @@ const stories: Story[] = [
     likes: 12000,
     contentType: 'story',
     content: [
-      "It began with fire, as all great stories do.",
+      "The summons came not as a royal decree, but as a searing pain behind Elara's eyes, a resonance that hummed in time with the frantic beat of her own heart. It was the dragon, Vyrenth, stirring from his centuries-long slumber beneath the smoking peaks of Mount Cinder.",
       "",
-      "The ancient dragon Vyrenth had slumbered for centuries, waiting for the one soul brave enough—or perhaps foolish enough—to awaken him.",
+      "She wasn't supposed to be the Chosen. The prophecies spoke of a warrior, a king, someone worthy of wielding the ancient power. Elara was just a village healer, more comfortable with poultices and tinctures than politics or power.",
       "",
-      "Elara never intended to be that person. But fate, it seemed, had other plans."
+      "Yet, the burning sigil now etched onto her palm disagreed. It pulsed with warmth, a silent command pulling her towards the mountain, towards a destiny she never asked for and wasn't sure she could survive."
     ],
     narrativeStage: 'middle',
     progress: 75,
@@ -183,6 +183,31 @@ const stories: Story[] = [
     views: 42000,
     likes: 7500
   },
+   // Add another story for variety
+  {
+    id: '7',
+    title: 'Neon & Chrome Heart',
+    image: { uri: 'https://images.unsplash.com/photo-1519677584237-752f813512e6?q=80&w=1170&auto=format&fit=crop' },
+    chapters: 30,
+    platform: 'Wattpad', // Added platform
+    author: 'CyberBard',
+    genre: ['Sci-Fi', 'Romance', 'Cyberpunk'],
+    completed: false,
+    wordCount: 88000,
+    views: 95000,
+    likes: 15000,
+    contentType: 'story',
+    content: [
+      "Rain slicked the chrome canyons of Neo-Veridia, reflecting the relentless neon glow that painted the perpetual night. Kai adjusted the collar of his worn synth-leather jacket, the static buzz of the city a familiar symphony against the pounding bass leaking from the club downstairs.",
+      "",
+      "He wasn't here for the music. He was hunting ghosts – digital echoes of a stolen past embedded in the network's deepest layers. His target tonight: a data broker known only as 'Silas', rumored to hold the key to unlocking the fragmented memories haunting Kai's cybernetic mind.",
+      "",
+      "The club's entrance hissed open, spilling out a wave of recycled air and dissonant beats. Time to dance with the devil in the pale moonlight... or rather, the flickering LED glow."
+    ],
+    narrativeStage: 'beginning',
+    progress: 10,
+    lastReadChapter: 3
+  }
 ];
 
 // Component for story card
@@ -232,45 +257,48 @@ const FullStoryCard = ({ item, index, onNavigate }: { item: Story, index: number
 
   const paragraphPreview = getParagraphPreview(item.content);
 
+  // Helper to format numbers (e.g., 34000 -> 34.0K)
+  const formatCount = (count?: number): string => {
+    if (count === undefined || count === null) return '0';
+    if (count >= 1000) {
+      return `${(count / 1000).toFixed(1)}K`;
+    }
+    return count.toString();
+  };
+
   return (
     <View style={styles.storyFullCard}>
       <Image source={item.image} style={styles.storyBackgroundImage} />
       <LinearGradient
-        colors={['transparent', 'rgba(0,0,0,0.85)']} // Slightly darker gradient
-        locations={[0.55, 1]} // Adjust gradient start
+        colors={['transparent', 'rgba(0,0,0,0.9)']}
+        locations={[0.5, 1]}
         style={styles.storyGradient}
       />
       <SafeAreaView style={styles.storyContentContainer}>
-        {/* Interaction Icons Side Bar */}
-        <View style={styles.sideBar}>
-           <TouchableOpacity style={styles.sideBarButton}>
-            <Ionicons name="heart-outline" size={28} color="white" />
-            {/* Moved like count to overlay */}
-           </TouchableOpacity>
-          <TouchableOpacity style={styles.sideBarButton}>
-            <Ionicons name="chatbubble-outline" size={28} color="white" />
-            <Text style={styles.sideBarText}>Discuss</Text> 
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.sideBarButton}>
-            <Ionicons name="share-social-outline" size={28} color="white" />
-            {/* <Text style={styles.sideBarText}>Share</Text> // Text optional */}
-          </TouchableOpacity>
-           <TouchableOpacity style={styles.sideBarButton}>
-            <Ionicons name="bookmark-outline" size={28} color="white" />
-            {/* <Text style={styles.sideBarText}>Save</Text> // Text optional */}
-          </TouchableOpacity>
-        </View>
-
-        {/* Bottom Info Overlay - Adjusted for fit */}
+        {/* Main Text Block */} 
         <View style={styles.bottomOverlay}>
           <Text style={styles.overlayPlatform}>
             {item.platform?.toUpperCase()} • {item.completed ? 'COMPLETED' : 'ONGOING'} • CH {item.chapters}
           </Text>
           <Text style={styles.overlayTitle} numberOfLines={2} ellipsizeMode="tail">{item.title}</Text>
           <Text style={styles.overlayAuthor}>
-            by {item.author} • {(item.views || 0) / 1000 >= 1 ? `${((item.views || 0) / 1000).toFixed(1)}K` : item.views} views • {(item.likes || 0) / 1000 >= 1 ? `${((item.likes || 0) / 1000).toFixed(1)}K` : item.likes} likes
+            by {item.author}
           </Text>
-          {item.progress !== undefined && item.progress > 0 && ( // Show progress only if started
+          {/* Paragraph Preview */} 
+          {paragraphPreview !== "" && (
+            <Text style={styles.overlayHookText} numberOfLines={4} ellipsizeMode="tail"> 
+              {paragraphPreview}
+            </Text>
+          )}
+          {/* Source Info - Moved here */} 
+           <View style={styles.sourceInfoContainer}>
+               {item.platform && <Text style={styles.platformSourceText}>From {item.platform}</Text>}
+               {item.wordCount && <Text style={styles.wordCountText}>{formatCount(item.wordCount)} words</Text>}
+               {item.views !== undefined && <Text style={styles.viewCountText}>• {formatCount(item.views)} views</Text>}
+           </View>
+
+          {/* Reading Progress (Optional display) - Kept for now */}
+          {item.progress !== undefined && item.progress > 0 && ( 
             <View style={styles.inlineProgressContainer}>
               <View style={styles.inlineProgressBar}>
                 <View style={[styles.inlineProgressFill, { width: `${item.progress}%` }]} />
@@ -278,19 +306,29 @@ const FullStoryCard = ({ item, index, onNavigate }: { item: Story, index: number
               <Text style={styles.inlineProgressText}>{item.progress}% Read</Text>
             </View>
           )}
-          {/* Paragraph Preview */}
-          {paragraphPreview !== "" && (
-            <Text style={styles.overlayHookText} numberOfLines={3} ellipsizeMode="tail">
-              {paragraphPreview}
-            </Text>
-          )}
-          {/* TODO: Add Roleplay/Sekai connection display here if data model supports it */}
+          {/* Main Action Button - Restore */}
           <TouchableOpacity style={styles.overlayActionButton} onPress={onNavigate}>
              <Ionicons name="book-outline" size={16} color="white" style={{ marginRight: 6 }} />
             <Text style={styles.overlayActionButtonText}>
                 {item.progress !== undefined && item.progress > 0 ? 'Continue Reading' : 'Start Reading'}
             </Text>
           </TouchableOpacity>
+        </View>
+
+        {/* --- Bottom Action Bar (Icons Only) --- */} 
+        <View style={styles.bottomActionBar}>
+            {/* Info Section Removed */}
+            <View style={styles.bottomActionBarIcons}>
+                <TouchableOpacity style={styles.actionBarButton}>
+                    <Ionicons name="heart-outline" size={26} color="white" />
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.actionBarButton}>
+                    <Ionicons name="bookmark-outline" size={26} color="white" />
+                </TouchableOpacity>
+                 <TouchableOpacity style={styles.actionBarButton}>
+                    <Ionicons name="share-social-outline" size={26} color="white" />
+                </TouchableOpacity>
+            </View>
         </View>
       </SafeAreaView>
     </View>
@@ -385,17 +423,17 @@ const styles = StyleSheet.create({
   },
   storyFullCard: {
     width: width,
-    height: height, // Ensure full screen height
+    height: height,
     position: 'relative',
-    backgroundColor: '#050505', // Slightly off-black background
-    justifyContent: 'flex-end', // Align content container to bottom
+    backgroundColor: '#050505',
+    justifyContent: 'flex-end', // Align SafeAreaView to bottom
   },
   storyGradient: {
     position: 'absolute',
     left: 0,
     right: 0,
     bottom: 0, 
-    height: height * 0.5, // Gradient covers lower half for better text readability
+    height: height * 0.6, // Extend gradient higher
     zIndex: 1,
   },
   storyBackgroundImage: {
@@ -403,103 +441,88 @@ const styles = StyleSheet.create({
     height: '100%',
     position: 'absolute',
     resizeMode: 'cover',
-    opacity: 0.85, // Slightly reduce image opacity if needed behind text
+    opacity: 0.85,
   },
-  storyContentContainer: {
-    // Removed flex: 1 and justifyContent, handled by storyFullCard
-    position: 'absolute', // Position absolutely within the card
-    bottom: Platform.OS === 'ios' ? 50 : 60, // Adjusted bottom padding for nav bar
+  // RE-ADD and MODIFY storyContentContainer (SafeAreaView)
+  storyContentContainer: { // SafeAreaView
+    position: 'absolute',
+    bottom: 0,
     left: 0,
     right: 0,
-    zIndex: 2,
-    paddingHorizontal: 15,
+    paddingHorizontal: 15, 
+    // Use SafeAreaView's inherent bottom padding, no extra needed here usually
+    zIndex: 2, 
   },
-  // Styles for TikTok layout - Adjusted
-  sideBar: {
-    position: 'absolute',
-    right: 5, // Closer to edge
-    bottom: 10, // Relative to storyContentContainer bottom padding now
-    alignItems: 'center',
-    zIndex: 3,
-  },
-  sideBarButton: {
-    alignItems: 'center',
-    marginBottom: 20, // Slightly less margin
-  },
-  sideBarText: {
-    color: 'white',
-    fontSize: 11, // Smaller text
-    fontWeight: '500',
-    marginTop: 3,
-    textShadowColor: 'rgba(0, 0, 0, 0.6)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 2,
-  },
-  bottomOverlay: {
-     width: '83%', // Adjusted width to give sidebar space
-     paddingBottom: 5, // Add a little padding at the very bottom
+  bottomOverlay: { 
+    // Add margin to clear the absolutely positioned bottomActionBar
+    marginBottom: 55, // Adjust as needed based on action bar height + gap
+    // paddingBottom: 10, // Minimal padding at the bottom of the text block - REMOVED or keep small if needed
   },
   overlayPlatform: {
-      color: '#DDD', // Lighter grey
-      fontSize: 12, // Smaller font size
-      fontWeight: '600', // Slightly bolder
-      marginBottom: 4,
+      color: '#DDD',
+      fontSize: 12,
+      fontWeight: '600',
+      marginBottom: 6, // Increased margin
       textTransform: 'uppercase',
       textShadowColor: 'rgba(0, 0, 0, 0.8)',
       textShadowOffset: { width: 0, height: 1 },
       textShadowRadius: 2,
   },
   overlayTitle: {
-    fontSize: 20, // Slightly smaller title
+    fontSize: 22, // Slightly larger title
     fontWeight: 'bold',
     color: 'white',
-    marginBottom: 5, // Less margin
-    lineHeight: 24, // Adjust line height for multi-line titles
+    marginBottom: 6, 
+    lineHeight: 26, 
     textShadowColor: 'rgba(0, 0, 0, 0.8)',
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 3,
   },
   overlayAuthor: {
-    fontSize: 13, // Smaller font size
+    fontSize: 14, // Slightly larger
     color: '#EEE',
-    marginBottom: 8, // Less margin
+    marginBottom: 12, // Increased margin
     textShadowColor: 'rgba(0, 0, 0, 0.8)',
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 2,
     lineHeight: 18,
   },
-  overlayActionButton: {
-      flexDirection: 'row', // Icon and text side-by-side
-      backgroundColor: 'rgba(255, 255, 255, 0.25)', // Slightly more visible
-      paddingVertical: 8, // Smaller button
-      paddingHorizontal: 12,
-      borderRadius: 6,
-      marginTop: 8, // Less margin
-      alignSelf: 'flex-start', 
-      alignItems: 'center', // Center icon and text
-  },
-  overlayActionButtonText: {
-      color: 'white',
-      fontSize: 13, // Smaller text
-      fontWeight: '600',
-  },
   overlayHookText: {
-      fontSize: 13, // Smaller font size
-      color: '#E5E5E5', // Slightly brighter
-      marginTop: 5, // Less margin
-      marginBottom: 10, // Less margin
-      lineHeight: 18, // Adjust line height
+      fontSize: 14,
+      color: '#E5E5E5',
+      marginTop: 8, // Space above preview
+      marginBottom: 12, // Space below preview
+      lineHeight: 20, 
       textShadowColor: 'rgba(0, 0, 0, 0.8)',
       textShadowOffset: { width: 0, height: 1 },
       textShadowRadius: 2,
   },
-  // Inline progress for FullStoryCard
-  inlineProgressContainer: {
+  // New container for source info line
+  sourceInfoContainer: {
       flexDirection: 'row',
       alignItems: 'center',
-      marginBottom: 8, // Less margin
-      marginTop: 2, // Add a little top margin
-      width: '100%',
+      marginTop: 4,
+      marginBottom: 10, 
+  },
+  platformSourceText: {
+      color: '#BBB',
+      fontSize: 12,
+      marginRight: 10,
+  },
+  wordCountText: {
+      color: '#BBB',
+      fontSize: 12,
+  },
+  viewCountText: {
+      color: '#BBB',
+      fontSize: 12,
+      marginLeft: 4, // Add space before views
+  },
+  inlineProgressContainer: { 
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 8,
+      marginTop: -5, // Adjust if needed relative to sourceInfoContainer
   },
   inlineProgressBar: {
       height: 2.5, // Thinner bar
@@ -518,6 +541,42 @@ const styles = StyleSheet.create({
       color: '#DDD',
       fontWeight: '500',
   },
-
-  // REMOVED Sekai related styles: sekaiInlineStats, sekaiInlineStatText
+  // Styles for bottomActionBar (Icons only)
+  bottomActionBar: {
+      position: 'absolute', 
+      // Position relative to the bottom of storyContentContainer (SafeAreaView)
+      bottom: 10, // Small gap from bottom edge of safe area
+      left: 15, // Corresponds to storyContentContainer paddingHorizontal
+      right: 15, // Corresponds to storyContentContainer paddingHorizontal
+      flexDirection: 'row',
+      justifyContent: 'flex-end', // Align icons to the right
+      alignItems: 'center',
+      paddingVertical: 5,
+      zIndex: 3, // Ensure it's visually on top if needed
+  },
+  bottomActionBarIcons: {
+      flexDirection: 'row',
+      alignItems: 'center',
+  },
+  actionBarButton: {
+      paddingHorizontal: 10,
+      paddingVertical: 5, // Add vertical touch area
+  },
+  // Add back overlayActionButton styles
+  overlayActionButton: {
+      flexDirection: 'row',
+      backgroundColor: 'rgba(75, 223, 195, 0.8)', // Use accent color
+      paddingVertical: 10,
+      paddingHorizontal: 16,
+      borderRadius: 8,
+      marginTop: 10, // Space above the button
+      alignSelf: 'flex-start', 
+      alignItems: 'center',
+  },
+  overlayActionButtonText: {
+      color: '#000', // Dark text on accent bg
+      fontSize: 14, 
+      fontWeight: 'bold',
+  },
+  // ... rest of styles ...
 }); 
