@@ -205,7 +205,6 @@ const StoryReadingView = ({
           </TouchableOpacity>
           
           <View style={styles.titleContainer}>
-            <Text style={styles.storyTitle}>{storyDetails?.title}</Text>
             <Text style={styles.chapterTitle}>
               {chapterData?.title || `Chapter ${chapter}`}
             </Text>
@@ -501,17 +500,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
   },
-  storyTitle: {
+  chapterTitle: {
     color: '#FFF',
     fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',
-  },
-  chapterTitle: {
-    color: '#CCC',
-    fontSize: 14,
-    textAlign: 'center',
-    marginTop: 2,
   },
   authorText: {
     color: '#999',

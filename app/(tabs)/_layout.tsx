@@ -58,52 +58,38 @@ export default function TabsLayout() {
             onPress={() => navigation.navigate('index')}
           />
           <CustomTab
-            name="Read"
+            name="Stories"
             isFocused={state.index === 1}
-            icon={<Ionicons name="book" size={24} color={state.index === 1 ? '#4BDFC3' : '#999'} />}
-            onPress={() => navigation.navigate('for-you')}
-          />
-          <CustomTab
-            name="Wiki"
-            isFocused={state.index === 2}
-            icon={<Ionicons name="globe" size={24} color={state.index === 2 ? '#4BDFC3' : '#999'} />}
-            onPress={() => navigation.navigate('wiki')}
+            icon={<Ionicons name="library" size={24} color={state.index === 1 ? '#4BDFC3' : '#999'} />}
+            onPress={() => navigation.navigate('stories')}
           />
           <CustomTab
             name="Create"
-            isFocused={state.index === 3}
+            isFocused={state.index === 2}
             icon={<Ionicons name="add" size={24} color="#000" />}
             gradient
             onPress={() => navigation.navigate('create')}
           />
           <CustomTab
-            name="Stories"
-            isFocused={state.index === 4}
-            icon={<Ionicons name="library" size={24} color={state.index === 4 ? '#4BDFC3' : '#999'} />}
-            onPress={() => navigation.navigate('stories')}
+            name="Interact"
+            isFocused={state.index === 3}
+            icon={<Ionicons name="chatbubbles" size={24} color={state.index === 3 ? '#4BDFC3' : '#999'} />}
+            onPress={() => navigation.navigate('for-you')}
           />
           <CustomTab
             name="Profile"
-            isFocused={state.index === 5}
-            icon={<Ionicons name="person" size={24} color={state.index === 5 ? '#4BDFC3' : '#999'} />}
+            isFocused={state.index === 4}
+            icon={<Ionicons name="person" size={24} color={state.index === 4 ? '#4BDFC3' : '#999'} />}
             onPress={() => navigation.navigate('profile')}
-          />
-          <CustomTab
-            name="Interact"
-            isFocused={state.index === 6}
-            icon={<Ionicons name="chatbubbles" size={24} color={state.index === 6 ? '#4BDFC3' : '#999'} />}
-            onPress={() => navigation.navigate('explore')}
           />
         </View>
       )}
     >
       <Tabs.Screen name="index" />
-      <Tabs.Screen name="for-you" />
-      <Tabs.Screen name="wiki" />
-      <Tabs.Screen name="create" />
       <Tabs.Screen name="stories" />
+      <Tabs.Screen name="create" />
+      <Tabs.Screen name="for-you" />
       <Tabs.Screen name="profile" />
-      <Tabs.Screen name="explore" options={{ href: '/explore' }} />
     </Tabs>
   );
 }

@@ -11,7 +11,7 @@ interface Story {
   title: string;
   image: ImageSourcePropType;
   platform?: string;
-  progress?: number; // Added for Continue Reading feature
+  progress?: number;
   lastReadChapter?: number;
   chapters?: number;
   genre?: string;
@@ -30,6 +30,59 @@ interface StoryCardProps {
 // Genre categories
 const GENRES = ['Romance', 'Fantasy', 'Sci-Fi', 'Adventure', 'Fanfiction', 'Drama'];
 
+// Top component to discover new stories
+const DiscoverNewStoriesSection = () => {
+  const router = useRouter();
+  
+  return (
+    <TouchableOpacity
+      style={styles.discoverContainer}
+      onPress={() => router.push({pathname: '/(tabs)/stories'})}
+    >
+      <LinearGradient
+        colors={['rgba(0,0,0,0.7)', 'rgba(0,0,0,0.3)']}
+        style={styles.discoverGradient}
+      >
+        <ImageBackground
+          source={{ uri: 'https://images.unsplash.com/photo-1512519829533-a985fb6fbea1?q=80&w=1064&auto=format&fit=crop' }}
+          style={styles.discoverBackground}
+        >
+          <View style={styles.discoverContent}>
+            <Text style={styles.discoverTitle}>Discover New Stories</Text>
+            <Text style={styles.discoverSubtitle}>Find your next favorite adventure</Text>
+            <View style={styles.discoverButton}>
+              <Text style={styles.discoverButtonText}>Browse All Stories</Text>
+              <Ionicons name="arrow-forward" size={16} color="white" />
+            </View>
+          </View>
+        </ImageBackground>
+      </LinearGradient>
+    </TouchableOpacity>
+  );
+};
+
+// Bottom component to explore worlds
+const ExploreNewWorldsButton = () => {
+  const router = useRouter();
+  
+  return (
+    <TouchableOpacity
+      style={styles.exploreWorldsButton}
+      onPress={() => router.push({pathname: '/(tabs)/wiki'})}
+    >
+      <LinearGradient
+        colors={['#4BDFC3', '#9EEAEE']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={styles.exploreGradient}
+      >
+        <Ionicons name="planet-outline" size={22} color="#000" />
+        <Text style={styles.exploreButtonText}>Explore New Worlds</Text>
+      </LinearGradient>
+    </TouchableOpacity>
+  );
+};
+
 export default function HomeScreen() {
   const router = useRouter();
   const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
@@ -39,7 +92,7 @@ export default function HomeScreen() {
     {
       id: '3',
       title: 'The Last Guardian',
-      image: { uri: 'https://placehold.co/600x800/333333/white?text=Guardian' },
+      image: { uri: 'https://images.unsplash.com/photo-1618336753974-aae8e04506aa?q=80&w=1170&auto=format&fit=crop' },
       chapters: 15,
       platform: 'Sekai',
       progress: 75,
@@ -53,7 +106,7 @@ export default function HomeScreen() {
     {
       id: '7',
       title: 'The Dragon\'s Chosen',
-      image: { uri: 'https://placehold.co/600x800/8a2be2/white?text=Dragon' },
+      image: { uri: 'https://images.unsplash.com/photo-1577493340887-b7bfff550145?q=80&w=980&auto=format&fit=crop' },
       chapters: 24,
       platform: 'AO3',
       progress: 25,
@@ -67,7 +120,7 @@ export default function HomeScreen() {
     {
       id: '4',
       title: 'My Bully Wants Me Forever',
-      image: { uri: 'https://placehold.co/600x800/444444/white?text=Bully' },
+      image: { uri: 'https://images.unsplash.com/photo-1551847677-dc82d764e1eb?q=80&w=687&auto=format&fit=crop' },
       chapters: 15,
       platform: 'Wattpad',
       progress: 40,
@@ -86,7 +139,7 @@ export default function HomeScreen() {
       {
         id: '1',
         title: 'Falling For Captain Marvel\'s Charm',
-        image: { uri: 'https://placehold.co/160x200/f16522/white?text=Captain+Marvel' },
+        image: { uri: 'https://images.unsplash.com/photo-1518834107812-67b0b7c58434?q=80&w=735&auto=format&fit=crop' },
         platform: 'Wattpad',
         genre: 'Romance',
         wordCount: 35000,
@@ -96,7 +149,7 @@ export default function HomeScreen() {
       {
         id: '4',
         title: 'My Bully Wants Me Forever',
-        image: { uri: 'https://placehold.co/160x200/444444/white?text=Bully' },
+        image: { uri: 'https://images.unsplash.com/photo-1551847677-dc82d764e1eb?q=80&w=687&auto=format&fit=crop' },
         platform: 'Wattpad',
         genre: 'Romance',
         wordCount: 26000,
@@ -108,7 +161,7 @@ export default function HomeScreen() {
       {
         id: '3',
         title: 'Scarlet Witch: Lab Troubles',
-        image: { uri: 'https://placehold.co/160x200/8a0000/white?text=Scarlet+Witch' },
+        image: { uri: 'https://images.unsplash.com/photo-1603126857599-f6e157fa2fe6?q=80&w=1015&auto=format&fit=crop' },
         platform: 'Sekai',
         genre: 'Fantasy',
         wordCount: 58000,
@@ -118,7 +171,7 @@ export default function HomeScreen() {
       {
         id: '7',
         title: 'The Dragon\'s Chosen',
-        image: { uri: 'https://placehold.co/160x200/8a2be2/white?text=Dragon' },
+        image: { uri: 'https://images.unsplash.com/photo-1577493340887-b7bfff550145?q=80&w=980&auto=format&fit=crop' },
         platform: 'AO3',
         genre: 'Fantasy',
         wordCount: 67000,
@@ -126,83 +179,99 @@ export default function HomeScreen() {
         rating: 4.9
       },
     ],
-    'Fanfiction': [
-      {
-        id: '2',
-        title: 'Black Widow saves the tech girl!',
-        image: { uri: 'https://placehold.co/160x200/aa0000/white?text=Black+Widow' },
-        platform: 'AO3',
-        genre: 'Fanfiction',
-        wordCount: 42000,
-        completionStatus: 'Ongoing',
-        rating: 4.3
-      },
-      {
-        id: '8',
-        title: 'My Hero Academia Girls Sleepover',
-        image: { uri: 'https://placehold.co/160x200/9932cc/white?text=Academia' },
-        platform: 'AO3',
-        genre: 'Fanfiction',
-        wordCount: 18000,
-        completionStatus: 'Completed',
-        rating: 4.1
-      },
-    ],
-    'Drama': [
-      {
-        id: '5',
-        title: 'Love Hashira Joins The Hot Spring!',
-        image: { uri: 'https://placehold.co/160x200/7c9aff/white?text=Hot+Spring' },
-        platform: 'AO3',
-        genre: 'Drama',
-        wordCount: 32000,
-        completionStatus: 'Hiatus',
-        rating: 4.0
-      },
-      {
-        id: '9',
-        title: 'Erza Demands Her Baby',
-        image: { uri: 'https://placehold.co/160x200/b22222/white?text=Erza' },
-        platform: 'Sekai',
-        genre: 'Drama',
-        wordCount: 29000,
-        completionStatus: 'Ongoing',
-        rating: 4.7
-      },
-    ],
-    'Adventure': [
-      {
-        id: '6',
-        title: 'The Military Commander Wants Me',
-        image: { uri: 'https://placehold.co/160x200/223322/white?text=Military' },
-        platform: 'Sekai',
-        genre: 'Adventure',
-        wordCount: 48000,
-        completionStatus: 'Ongoing',
-        rating: 4.4
-      },
-    ],
   };
 
-  // Get editors' choice stories (top rated from each genre)
-  const editorsChoice: Story[] = Object.values(allStoriesByGenre)
-    .map(genreStories => 
-      genreStories.sort((a, b) => (b.rating || 0) - (a.rating || 0))[0]
-    )
-    .filter(story => !!story)
-    .slice(0, 3);
+  // Sample data for editors' choice
+  const editorsChoice: Story[] = [
+    {
+      id: '10',
+      title: 'The Academy of Elements',
+      image: { uri: 'https://images.unsplash.com/photo-1507608616759-54f48f0af0ee?q=80&w=987&auto=format&fit=crop' },
+      platform: 'Sekai',
+      genre: 'Fantasy',
+      wordCount: 72000,
+      completionStatus: 'Ongoing',
+      rating: 4.9
+    },
+    {
+      id: '11',
+      title: 'His Dangerous Addiction',
+      image: { uri: 'https://images.unsplash.com/photo-1525145770200-ecb9a96bfcbd?q=80&w=1064&auto=format&fit=crop' },
+      platform: 'Wattpad',
+      genre: 'Romance',
+      wordCount: 55000,
+      completionStatus: 'Completed',
+      rating: 4.7
+    },
+  ];
 
-  // Filter stories by genre
-  const getFilteredStories = (): Story[] => {
-    if (!selectedGenre) {
-      // If no genre is selected, return a mix of stories from all genres
-      return Object.values(allStoriesByGenre)
-        .flat()
-        .sort(() => 0.5 - Math.random())
-        .slice(0, 6);
+  // Sample data for top 10 stories
+  const top10Stories: Story[] = [
+    {
+      id: '20',
+      title: 'The Demon Prince\'s Forbidden Love',
+      image: { uri: 'https://images.unsplash.com/photo-1542596594-649edbc13630?q=80&w=987&auto=format&fit=crop' },
+      platform: 'Sekai',
+      genre: 'Romance',
+      wordCount: 85000,
+      completionStatus: 'Ongoing',
+      rating: 4.9
+    },
+    {
+      id: '21',
+      title: 'The Kingdom of Enchanted Isles',
+      image: { uri: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1064&auto=format&fit=crop' },
+      platform: 'Sekai',
+      genre: 'Fantasy',
+      wordCount: 120000,
+      completionStatus: 'Ongoing',
+      rating: 4.8
+    },
+    {
+      id: '22',
+      title: 'The CEO\'s Secret Arrangement',
+      image: { uri: 'https://images.unsplash.com/photo-1604328471151-b52226907017?q=80&w=1064&auto=format&fit=crop' },
+      platform: 'Sekai',
+      genre: 'Romance',
+      wordCount: 68000,
+      completionStatus: 'Completed',
+      rating: 4.7
     }
-    return allStoriesByGenre[selectedGenre] || [];
-  };
+  ];
+
+  // Sample data for top 10 worlds
+  const top10Worlds: Story[] = [
+    {
+      id: '30',
+      title: 'Celestial Academy Universe',
+      image: { uri: 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=1022&auto=format&fit=crop' },
+      platform: 'Sekai',
+      genre: 'Fantasy',
+      wordCount: 250000,
+      completionStatus: 'Ongoing',
+      rating: 4.9
+    },
+    {
+      id: '31',
+      title: 'Elysium: The Fallen Empire',
+      image: { uri: 'https://images.unsplash.com/photo-1579547945413-497e1b99dac0?q=80&w=1039&auto=format&fit=crop' },
+      platform: 'Sekai',
+      genre: 'Science Fiction',
+      wordCount: 320000,
+      completionStatus: 'Ongoing',
+      rating: 4.8
+    },
+    {
+      id: '32',
+      title: 'Modern Mystics',
+      image: { uri: 'https://images.unsplash.com/photo-1518709766631-a6a7f45921c3?q=80&w=1039&auto=format&fit=crop' },
+      platform: 'Sekai',
+      genre: 'Urban Fantasy',
+      wordCount: 185000,
+      completionStatus: 'Ongoing',
+      rating: 4.7
+    }
+  ];
 
   // Open the story reader
   const openStoryReader = (story: Story) => {
@@ -210,8 +279,7 @@ export default function HomeScreen() {
       pathname: '/story-reader',
       params: {
         id: story.id,
-        platform: story.platform || 'Sekai',
-        chapter: story.lastReadChapter || 1
+        title: story.title,
       }
     });
   };
@@ -245,160 +313,111 @@ export default function HomeScreen() {
     </TouchableOpacity>
   );
 
-  // Continue reading card component
-  const renderContinueReadingItem = ({ item }: { item: Story }) => (
-    <TouchableOpacity 
-      style={styles.continueReadingCard}
-      onPress={() => openStoryReader(item)}
-    >
-      <Image source={item.image} style={styles.continueReadingImage} />
-      <View style={styles.continueReadingInfo}>
-        <Text style={styles.continueReadingCardTitle} numberOfLines={1}>{item.title}</Text>
-        <View style={styles.continueReadingMeta}>
-          <Text style={styles.continueReadingMetaText}>
-            {item.genre} • {item.timeToRead}
-          </Text>
-        </View>
-        <View style={styles.continueReadingProgress}>
-          <View style={styles.continueReadingProgressBar}>
-            <View 
-              style={[
-                styles.continueReadingProgressFill, 
-                { width: item.progress ? `${item.progress}%` : '0%' }
-              ]} 
-            />
-          </View>
-          <Text style={styles.continueReadingProgressText}>
-            {item.progress}% • Ch {item.lastReadChapter}/{item.chapters}
-          </Text>
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
-
-  // Genre selector
-  const renderGenreSelector = () => (
-    <View style={styles.genreSelectorContainer}>
-      <ScrollView 
-        horizontal 
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.genreSelector}
-      >
-        <TouchableOpacity 
-          style={[
-            styles.genreButton, 
-            !selectedGenre && styles.selectedGenreButton
-          ]}
-          onPress={() => setSelectedGenre(null)}
-        >
-          <Text style={[
-            styles.genreButtonText,
-            !selectedGenre && styles.selectedGenreButtonText
-          ]}>All</Text>
-        </TouchableOpacity>
-        
-        {GENRES.map(genre => (
-          <TouchableOpacity 
-            key={genre}
-            style={[
-              styles.genreButton, 
-              selectedGenre === genre && styles.selectedGenreButton
-            ]}
-            onPress={() => setSelectedGenre(genre)}
-          >
-            <Text style={[
-              styles.genreButtonText,
-              selectedGenre === genre && styles.selectedGenreButtonText
-            ]}>{genre}</Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-    </View>
-  );
-
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
       
-      {/* Background image for the entire screen */}
-      <Image 
-        source={{ uri: 'https://images.unsplash.com/photo-1511447333015-45b65e60f6d5?q=80&w=1000' }}
-        style={styles.backgroundImage}
-        blurRadius={3}
-      />
-      
-      <SafeAreaView style={styles.safeArea} edges={['top']}>
+      <SafeAreaView style={styles.safeArea}>
         <View style={styles.header}>
           <Text style={styles.headerTitle}>Home</Text>
           <TouchableOpacity style={styles.searchButton}>
             <Ionicons name="search" size={24} color="white" />
           </TouchableOpacity>
         </View>
-        
-        {/* Featured image banner */}
-        <View style={styles.bannerContainer}>
-          <ImageBackground 
-            source={{ uri: 'https://wallpaperaccess.com/full/1373201.jpg' }}
-            style={styles.bannerImage}
-            imageStyle={styles.bannerImageStyle}
-          >
-            <LinearGradient
-              colors={['transparent', 'rgba(0,0,0,0.8)']}
-              style={styles.bannerGradient}
-            >
-              <Text style={styles.bannerTitle}>Discover New Stories</Text>
-              <Text style={styles.bannerSubtitle}>Explore worlds of adventure and romance</Text>
-            </LinearGradient>
-          </ImageBackground>
-        </View>
-        
-        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-          {/* Continue Reading section */}
-          {continueReadingStories.length > 0 && (
-            <View style={styles.continueReadingSection}>
-              <Text style={styles.sectionTitle}>Continue Reading</Text>
-              <FlatList
-                data={continueReadingStories}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                keyExtractor={item => `continue-${item.id}`}
-                renderItem={renderContinueReadingItem}
-                contentContainerStyle={styles.continueReadingList}
-              />
-            </View>
-          )}
 
-          <View style={styles.todaysPicksSection}>
-            <Text style={styles.sectionTitle}>Today's Picks For Lily Zhao (LZ)</Text>
+        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+          {/* Add Discover New Stories section at the top */}
+          <DiscoverNewStoriesSection />
+          
+          {/* Continue Reading Section */}
+          <View style={{marginBottom: 24}}>
+            <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12, paddingHorizontal: 16}}>
+              <Text style={styles.sectionTitle}>Continue Reading</Text>
+              <TouchableOpacity>
+                <Text style={{color: '#4BDFC3', fontSize: 14}}>See All</Text>
+              </TouchableOpacity>
+            </View>
             
-            {renderGenreSelector()}
+            {/* Continue Reading Stories */}
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{paddingLeft: 16}}>
+              {continueReadingStories.map((story) => (
+                <View key={story.id} style={styles.continueReadingCard}>
+                  <TouchableOpacity onPress={() => openStoryReader(story)}>
+                    <Image source={story.image} style={styles.continueReadingImage} />
+                    <LinearGradient
+                      colors={['transparent', 'rgba(0,0,0,0.8)']}
+                      style={{position: 'absolute', bottom: 0, left: 0, right: 0, padding: 12}}
+                    >
+                      <Text style={styles.continueReadingCardTitle}>{story.title}</Text>
+                      <View style={{marginTop: 8}}>
+                        <View style={styles.continueReadingProgressBar}>
+                          <View style={[
+                            styles.continueReadingProgressFill, 
+                            { width: story.progress ? `${story.progress}%` : '0%' }
+                          ]} />
+                        </View>
+                        <Text style={styles.continueReadingProgressText}>
+                          {story.progress}% · Ch {story.lastReadChapter}/{story.chapters}
+                        </Text>
+                      </View>
+                      <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 8}}>
+                        <Text style={{color: '#CCC', fontSize: 12}}>{story.timeToRead}</Text>
+                        <Text style={{color: '#CCC', fontSize: 12}}>{story.platform}</Text>
+                      </View>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                </View>
+              ))}
+            </ScrollView>
+          </View>
+          
+          {/* Top 10 Stories */}
+          <View style={{marginBottom: 24}}>
+            <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12, paddingHorizontal: 16}}>
+              <Text style={styles.sectionTitle}>Top 10 Stories</Text>
+              <TouchableOpacity>
+                <Text style={{color: '#4BDFC3', fontSize: 14}}>See All</Text>
+              </TouchableOpacity>
+            </View>
             
-            <View style={styles.gridContainer}>
-              {getFilteredStories().map(story => (
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{paddingLeft: 16}}>
+              {top10Stories.map((story) => (
                 <StoryCard 
                   key={story.id} 
                   story={story} 
-                  onPress={() => openStoryReader(story)}
+                  onPress={() => openStoryReader(story)} 
                   showMetrics={true}
                 />
               ))}
+            </ScrollView>
+          </View>
+          
+          {/* Top 10 Worlds */}
+          <View style={{marginBottom: 24}}>
+            <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12, paddingHorizontal: 16}}>
+              <Text style={styles.sectionTitle}>Top 10 Worlds</Text>
+              <TouchableOpacity>
+                <Text style={{color: '#4BDFC3', fontSize: 14}}>See All</Text>
+              </TouchableOpacity>
             </View>
+            
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{paddingLeft: 16}}>
+              {top10Worlds.map((story) => (
+                <StoryCard 
+                  key={story.id} 
+                  story={story} 
+                  onPress={() => openStoryReader(story)} 
+                  showMetrics={true}
+                />
+              ))}
+            </ScrollView>
           </View>
-
-          <Text style={styles.sectionTitle}>Editors' Choice</Text>
-          <View style={styles.gridRow}>
-            {editorsChoice.map(story => (
-              <StoryCard 
-                key={story.id} 
-                story={story} 
-                onPress={() => openStoryReader(story)}
-                showMetrics={true}
-              />
-            ))}
-          </View>
-
-          {/* Bottom spacer for the tab bar */}
-          <View style={styles.bottomSpacer} />
+          
+          {/* Explore New Worlds Button at the bottom */}
+          <ExploreNewWorldsButton />
+          
+          {/* Add spacing at the bottom */}
+          <View style={{ height: 100 }} />
         </ScrollView>
       </SafeAreaView>
     </View>
@@ -438,37 +457,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  bannerContainer: {
-    height: 200,
-    marginHorizontal: 16,
-    marginBottom: 16,
-    borderRadius: 12,
-    overflow: 'hidden',
-  },
-  bannerImage: {
-    width: '100%',
-    height: '100%',
-    justifyContent: 'flex-end',
-  },
-  bannerImageStyle: {
-    borderRadius: 12,
-  },
-  bannerGradient: {
-    width: '100%',
-    height: '50%',
-    justifyContent: 'flex-end',
-    padding: 16,
-  },
-  bannerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#FFF',
-    marginBottom: 4,
-  },
-  bannerSubtitle: {
-    fontSize: 14,
-    color: '#CCC',
-  },
   content: {
     flex: 1,
     paddingHorizontal: 16,
@@ -478,7 +466,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#FFF',
     marginBottom: 16,
-    marginTop: 8,
+    marginTop: 16,
   },
   continueReadingSection: {
     marginBottom: 24,
@@ -537,17 +525,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#CCC',
   },
-  todaysPicksSection: {
-    marginBottom: 24,
-  },
-  gridContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    marginBottom: 16,
-  },
   gridRow: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'space-between',
     marginBottom: 16,
   },
@@ -561,18 +541,20 @@ const styles = StyleSheet.create({
   },
   storyImage: {
     width: '100%',
-    height: '70%',
+    height: '63%',
     resizeMode: 'cover',
   },
   storyTitleBackground: {
     flex: 1,
-    padding: 8,
+    padding: 10,
     justifyContent: 'space-between',
   },
   storyTitle: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: 'bold',
     color: '#FFF',
+    lineHeight: 16,
+    marginBottom: 4,
   },
   storyMetrics: {
     flexDirection: 'row',
@@ -600,31 +582,88 @@ const styles = StyleSheet.create({
     color: '#000',
     fontWeight: 'bold',
   },
-  genreSelectorContainer: {
-    marginBottom: 16,
-  },
-  genreSelector: {
-    paddingBottom: 8,
-  },
-  genreButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    backgroundColor: 'rgba(255,255,255,0.1)',
-    borderRadius: 20,
-    marginRight: 8,
-  },
-  selectedGenreButton: {
-    backgroundColor: '#4BDFC3',
-  },
-  genreButtonText: {
-    color: '#CCC',
-    fontSize: 14,
-  },
-  selectedGenreButtonText: {
-    color: '#000',
-    fontWeight: 'bold',
-  },
   bottomSpacer: {
     height: 100,
   },
+  // Discover New Stories styles
+  discoverContainer: {
+    height: 180,
+    marginHorizontal: 16,
+    marginBottom: 24,
+    borderRadius: 16,
+    overflow: 'hidden',
+  },
+  discoverBackground: {
+    width: '100%',
+    height: '100%',
+  },
+  discoverGradient: {
+    width: '100%',
+    height: '100%',
+  },
+  discoverContent: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
+  discoverTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: 8,
+    textShadowColor: 'rgba(0,0,0,0.5)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
+  },
+  discoverSubtitle: {
+    fontSize: 16,
+    color: 'rgba(255,255,255,0.8)',
+    marginBottom: 16,
+    textShadowColor: 'rgba(0,0,0,0.5)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
+  },
+  discoverButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    alignSelf: 'flex-start',
+  },
+  discoverButtonText: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: '600',
+    marginRight: 8,
+  },
+  
+  // Explore New Worlds button styles
+  exploreWorldsButton: {
+    marginHorizontal: 16,
+    marginTop: 30,
+    marginBottom: 10,
+    borderRadius: 28,
+    overflow: 'hidden',
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
+  exploreGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+  },
+  exploreButtonText: {
+    color: '#000',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginLeft: 10,
+  },
+  // ... existing styles ...
 });

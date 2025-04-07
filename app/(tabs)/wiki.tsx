@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, FlatList, TouchableOpacity, Image, Platform, St
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
 // Updated worlds data with better image URLs
 const WORLDS = [
@@ -54,6 +55,7 @@ interface World {
 
 export default function WikiScreen() {
   const insets = useSafeAreaInsets();
+  const router = useRouter();
   
   const renderWorldItem = ({ item }: { item: World }) => (
     <TouchableOpacity style={styles.worldCard}>
@@ -63,7 +65,7 @@ export default function WikiScreen() {
         <Text style={styles.worldCreator}>Created by {item.creator}</Text>
         <Text style={styles.worldStories}>{item.storyCount} stories</Text>
       </View>
-      <TouchableOpacity style={styles.exploreButton}>
+      <TouchableOpacity style={styles.exploreButton} onPress={() => router.push('/for-you')}>
         <Text style={styles.exploreButtonText}>Explore</Text>
       </TouchableOpacity>
     </TouchableOpacity>
@@ -82,9 +84,28 @@ export default function WikiScreen() {
       
       <SafeAreaView edges={['top']} style={{ backgroundColor: '#000' }}>
         <View style={styles.header}>
-          <Text style={styles.title}>World Wiki</Text>
+          <Text style={styles.title}>Wiki</Text>
           <TouchableOpacity style={styles.searchButton}>
             <Ionicons name="search" size={20} color="white" />
+          </TouchableOpacity>
+        </View>
+        
+        <View style={styles.socialButtonsContainer}>
+          <TouchableOpacity style={styles.socialButton} onPress={() => router.push('/for-you')}>
+            <Ionicons name="logo-reddit" size={22} color="#FF5700" />
+            <Text style={styles.socialButtonText}>Reddit</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.socialButton} onPress={() => router.push('/for-you')}>
+            <Ionicons name="logo-discord" size={22} color="#5865F2" />
+            <Text style={styles.socialButtonText}>Discord</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.socialButton} onPress={() => router.push('/create')}>
+            <Ionicons name="add-circle" size={22} color="#4BDFC3" />
+            <Text style={styles.socialButtonText}>Create</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.socialButton} onPress={() => router.push('/profile')}>
+            <Ionicons name="person-circle" size={22} color="#4BDFC3" />
+            <Text style={styles.socialButtonText}>Profile</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -106,7 +127,7 @@ export default function WikiScreen() {
                 <Text style={styles.featuredDescription}>
                   A vast archipelago of floating islands with unique magic systems and creatures.
                 </Text>
-                <TouchableOpacity style={styles.featuredButton}>
+                <TouchableOpacity style={styles.featuredButton} onPress={() => router.push('/for-you')}>
                   <Text style={styles.featuredButtonText}>View Details</Text>
                 </TouchableOpacity>
               </View>
@@ -122,7 +143,7 @@ export default function WikiScreen() {
         <View style={styles.categoriesContainer}>
           <Text style={styles.sectionTitle}>Categories</Text>
           <View style={styles.categoriesGrid}>
-            <TouchableOpacity style={styles.categoryItem}>
+            <TouchableOpacity style={styles.categoryItem} onPress={() => router.push('/for-you')}>
               <ImageBackground 
                 source={{ uri: 'https://wallpaperaccess.com/full/2825704.jpg' }}
                 style={styles.categoryImage}
@@ -134,7 +155,7 @@ export default function WikiScreen() {
               </ImageBackground>
             </TouchableOpacity>
             
-            <TouchableOpacity style={styles.categoryItem}>
+            <TouchableOpacity style={styles.categoryItem} onPress={() => router.push('/for-you')}>
               <ImageBackground 
                 source={{ uri: 'https://wallpaperaccess.com/full/982923.jpg' }}
                 style={styles.categoryImage}
@@ -146,7 +167,7 @@ export default function WikiScreen() {
               </ImageBackground>
             </TouchableOpacity>
             
-            <TouchableOpacity style={styles.categoryItem}>
+            <TouchableOpacity style={styles.categoryItem} onPress={() => router.push('/for-you')}>
               <ImageBackground 
                 source={{ uri: 'https://wallpaperaccess.com/full/1433763.jpg' }}
                 style={styles.categoryImage}
@@ -158,7 +179,7 @@ export default function WikiScreen() {
               </ImageBackground>
             </TouchableOpacity>
             
-            <TouchableOpacity style={styles.categoryItem}>
+            <TouchableOpacity style={styles.categoryItem} onPress={() => router.push('/for-you')}>
               <ImageBackground 
                 source={{ uri: 'https://wallpaperaccess.com/full/1309191.jpg' }}
                 style={styles.categoryImage}
@@ -367,5 +388,23 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 14,
     fontWeight: 'bold',
+  },
+  socialButtonsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+    backgroundColor: '#000',
+  },
+  socialButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 8,
+  },
+  socialButtonText: {
+    color: 'white',
+    fontSize: 12,
+    marginTop: 4,
   },
 }); 

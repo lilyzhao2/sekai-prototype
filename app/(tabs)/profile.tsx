@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, Image, TouchableOpacity, ScrollView, Platform, FlatList } from 'react-native';
+import { StyleSheet, View, Text, Image, TouchableOpacity, ScrollView, Platform } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Link, useRouter } from 'expo-router';
 
 // Mock data for played stories
 interface StoryItem {
@@ -31,148 +33,166 @@ const playedStories: StoryItem[] = [
 
 export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
-  const [activeTab, setActiveTab] = useState('played');
+  const router = useRouter();
+  const [activeTab, setActiveTab] = useState('stories');
   
-  // Render a story item in the list
-  const renderStoryItem = ({ item }: { item: StoryItem }) => (
-    <TouchableOpacity style={styles.storyItem}>
-      <Image source={{ uri: item.image }} style={styles.storyItemImage} />
-      <View style={styles.storyItemContent}>
-        <Text style={styles.storyItemTitle}>{item.title}</Text>
-        <Text style={styles.storyItemSubtitle} numberOfLines={1}>{item.subtitle}</Text>
-      </View>
-      <Text style={styles.storyItemTime}>{item.time}</Text>
-    </TouchableOpacity>
-  );
-  
+  // No Sekai created yet
+  const isEmptyState = true;
+
   return (
     <View style={styles.container}>
-      <SafeAreaView edges={['top']} style={{ backgroundColor: '#000' }}>
+      <SafeAreaView edges={['top']} style={styles.safeArea}>
+        {/* Top header with only search button */}
+        <View style={[styles.header, {borderBottomWidth: 0}]}>
+          <View style={{flex: 1}} />
+          <TouchableOpacity style={styles.actionButton}>
+            <Ionicons name="search" size={24} color="white" />
+          </TouchableOpacity>
+        </View>
+
+        {/* Main header with username and buttons */}
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>My Profile</Text>
-          <TouchableOpacity style={styles.settingsButton}>
-            <Ionicons name="settings-outline" size={28} color="white" />
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
-
-      <View style={styles.profileInfo}>
-        <View style={styles.avatarContainer}>
-          <Image 
-            source={{ uri: 'https://placehold.co/100x100/orange/white?text=Fox' }} 
-            style={styles.avatar} 
-          />
-          <TouchableOpacity style={styles.cameraButton}>
-            <Ionicons name="camera" size={18} color="white" />
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.statsContainer}>
-          <View style={styles.statItem}>
-            <Text style={styles.statNumber}>0</Text>
-            <Text style={styles.statLabel}>Story</Text>
-          </View>
-          <View style={styles.statItem}>
-            <Text style={styles.statNumber}>0</Text>
-            <Text style={styles.statLabel}>Followers</Text>
-          </View>
-          <View style={styles.statItem}>
-            <Text style={styles.statNumber}>2</Text>
-            <Text style={styles.statLabel}>Following</Text>
+          <Text style={styles.headerTitle}>@olivia</Text>
+          <View style={styles.headerActions}>
+            <TouchableOpacity style={styles.actionButton}>
+              <Ionicons name="heart-outline" size={24} color="white" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.actionButton}>
+              <Ionicons name="play-circle-outline" size={24} color="white" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.settingsButton}>
+              <Ionicons name="settings-outline" size={24} color="white" />
+            </TouchableOpacity>
           </View>
         </View>
-      </View>
 
-      <View style={styles.nameContainer}>
-        <Text style={styles.userName}>Lily Zhao (LZ)</Text>
-        <TouchableOpacity style={styles.editButton}>
-          <Ionicons name="pencil-outline" size={20} color="white" />
-        </TouchableOpacity>
-      </View>
+        <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+          {/* Profile Info Section */}
+          <View style={styles.profileSection}>
+            {/* Avatar */}
+            <View style={styles.profileHeader}>
+              <View style={styles.avatarContainer}>
+                <Image 
+                  source={{ uri: 'https://randomuser.me/api/portraits/women/32.jpg' }} 
+                  style={styles.avatar} 
+                />
+                <TouchableOpacity style={styles.cameraButton}>
+                  <Ionicons name="camera" size={14} color="#000" />
+                </TouchableOpacity>
+              </View>
 
-      <View style={styles.socialButtons}>
-        <TouchableOpacity style={styles.socialButton}>
-          <Ionicons name="logo-discord" size={20} color="white" style={styles.socialButtonIcon} />
-          <Text style={styles.socialButtonText}>Join on Discord</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.socialButton}>
-          <Ionicons name="logo-reddit" size={20} color="white" style={styles.socialButtonIcon} />
-          <Text style={styles.socialButtonText}>Join on Reddit</Text>
-        </TouchableOpacity>
-      </View>
+              {/* Stats (Story, Followers, Following) */}
+              <View style={styles.statsContainer}>
+                <View style={styles.statItem}>
+                  <Text style={styles.statValue}>12</Text>
+                  <Text style={styles.statLabel}>Sekais</Text>
+                </View>
+                <View style={styles.statItem}>
+                  <Text style={styles.statValue}>218</Text>
+                  <Text style={styles.statLabel}>Following</Text>
+                </View>
+                <View style={styles.statItem}>
+                  <Text style={styles.statValue}>452</Text>
+                  <Text style={styles.statLabel}>Followers</Text>
+                </View>
+              </View>
+            </View>
 
-      {/* Top-level tabs for Sekai/Stories/Liked content */}
-      <View style={styles.tabsContainer}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <TouchableOpacity style={styles.tabButton}>
-            <Ionicons name="albums-outline" size={24} color="white" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.tabButton}>
-            <Ionicons name="videocam-outline" size={24} color="white" />
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.tabButton, styles.activeTabButton]}>
-            <Ionicons name="heart-outline" size={24} color="white" />
-          </TouchableOpacity>
+            {/* Username with edit button */}
+            <View style={styles.usernameContainer}>
+              <Text style={styles.username}>Olivia</Text>
+              <TouchableOpacity style={styles.editButton}>
+                <Ionicons name="pencil" size={18} color="white" />
+              </TouchableOpacity>
+            </View>
+
+            {/* Social buttons - smaller size with additional platforms */}
+            <View style={styles.socialButtonsContainer}>
+              <TouchableOpacity style={styles.socialButton}>
+                <Ionicons name="logo-discord" size={16} color="#5865F2" style={styles.socialIcon} />
+                <Text style={styles.socialButtonText}>Discord</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.socialButton}>
+                <Ionicons name="logo-reddit" size={16} color="#FF4500" style={styles.socialIcon} />
+                <Text style={styles.socialButtonText}>Reddit</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.socialButton}>
+                <Ionicons name="book-outline" size={16} color="#FF6900" style={styles.socialIcon} />
+                <Text style={styles.socialButtonText}>Wattpad</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.socialButton}>
+                <Ionicons name="library-outline" size={16} color="#990000" style={styles.socialIcon} />
+                <Text style={styles.socialButtonText}>AO3</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Tab navigation - Instagram style */}
+          <View style={styles.tabBar}>
+            <TouchableOpacity 
+              style={[styles.tabButton, activeTab === 'stories' && styles.activeTabButton]}
+              onPress={() => setActiveTab('stories')}
+            >
+              <Ionicons 
+                name="book-outline" 
+                size={22} 
+                color={activeTab === 'stories' ? '#4BDFC3' : '#999'} 
+              />
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={[styles.tabButton, activeTab === 'sekai' && styles.activeTabButton]}
+              onPress={() => setActiveTab('sekai')}
+            >
+              <Ionicons 
+                name="planet-outline" 
+                size={22} 
+                color={activeTab === 'sekai' ? '#4BDFC3' : '#999'} 
+              />
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={[styles.tabButton, activeTab === 'interacted' && styles.activeTabButton]}
+              onPress={() => setActiveTab('interacted')}
+            >
+              <Ionicons 
+                name="chatbubble-outline" 
+                size={22} 
+                color={activeTab === 'interacted' ? '#4BDFC3' : '#999'} 
+              />
+            </TouchableOpacity>
+          </View>
+
+          {/* Tab indicator - remove text labels, Instagram doesn't have them */}
+          <View style={styles.tabIndicatorRow}>
+            <View style={styles.tabLabelsContainer}>
+              <Text style={[styles.tabLabel, activeTab === 'stories' && styles.activeTabLabel]}>
+                Stories <Text style={styles.tabCount}>0</Text>
+              </Text>
+              <Text style={[styles.tabLabel, activeTab === 'sekai' && styles.activeTabLabel]}>
+                Sekai <Text style={styles.tabCount}>12</Text>
+              </Text>
+              <Text style={[styles.tabLabel, activeTab === 'interacted' && styles.activeTabLabel]}>
+                Interacted <Text style={styles.tabCount}>0</Text>
+              </Text>
+            </View>
+          </View>
+
+          {/* Empty state message with clickable icon */}
+          {isEmptyState && (
+            <View style={styles.emptyStateContainer}>
+              <TouchableOpacity 
+                style={styles.emptyStateIcon}
+                onPress={() => router.push('/create')}
+              >
+                <Ionicons name="add" size={40} color="#4BDFC3" />
+              </TouchableOpacity>
+              <Text style={styles.emptyStateTitle}>Nothing Yet</Text>
+              <Text style={styles.emptyStateSubtitle}>
+                Create your first story and start building your world.
+              </Text>
+            </View>
+          )}
         </ScrollView>
-      </View>
-
-      {/* Secondary tabs for Liked/Played */}
-      <View style={styles.secondaryTabsContainer}>
-        <TouchableOpacity 
-          style={[styles.secondaryTab, activeTab === 'liked' && styles.activeSecondaryTab]} 
-          onPress={() => setActiveTab('liked')}
-        >
-          <Text style={[styles.secondaryTabText, activeTab === 'liked' && styles.activeSecondaryTabText]}>
-            Liked
-          </Text>
-          {activeTab === 'liked' && <View style={styles.activeIndicator} />}
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={[styles.secondaryTab, activeTab === 'played' && styles.activeSecondaryTab]} 
-          onPress={() => setActiveTab('played')}
-        >
-          <Text style={[styles.secondaryTabText, activeTab === 'played' && styles.activeSecondaryTabText]}>
-            Played
-          </Text>
-          {activeTab === 'played' && <View style={styles.activeIndicator} />}
-        </TouchableOpacity>
-      </View>
-
-      {/* Tab content */}
-      <View style={styles.tabContent}>
-        {activeTab === 'liked' ? (
-          <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>No liked stories yet</Text>
-            <Text style={styles.emptySubText}>Stories you like will appear here</Text>
-          </View>
-        ) : (
-          <FlatList
-            data={playedStories}
-            renderItem={renderStoryItem}
-            keyExtractor={item => item.id}
-            contentContainerStyle={{ flexGrow: 1 }}
-            ListHeaderComponent={() => (
-              <View style={styles.notificationsContainer}>
-                <View style={styles.notificationIconContainer}>
-                  <Ionicons name="notifications-outline" size={24} color="white" />
-                </View>
-                <View style={styles.notificationTextContainer}>
-                  <Text style={styles.notificationTitle}>Notifications</Text>
-                  <Text style={styles.notificationSubtitle}>See notifications here.</Text>
-                </View>
-                <Ionicons name="chevron-forward" size={20} color="#666" />
-              </View>
-            )}
-            ListEmptyComponent={() => (
-              <View style={styles.emptyContainer}>
-                <Text style={styles.emptyText}>No activity yet</Text>
-                <Text style={styles.emptySubText}>Stories you interact with will appear here</Text>
-              </View>
-            )}
-          />
-        )}
-      </View>
+      </SafeAreaView>
     </View>
   );
 }
@@ -182,242 +202,196 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#000',
   },
+  safeArea: {
+    flex: 1,
+  },
+  scrollView: {
+    flex: 1,
+  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 16,
-    paddingVertical: 16,
-    paddingTop: 24,
+    paddingVertical: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#333',
   },
   headerTitle: {
-    fontSize: 34,
+    fontSize: 24,
     fontWeight: 'bold',
     color: 'white',
   },
-  settingsButton: {
-    padding: 8,
-  },
-  profileInfo: {
+  headerActions: {
     flexDirection: 'row',
+    alignItems: 'center',
+  },
+  actionButton: {
+    marginLeft: 18,
+  },
+  settingsButton: {
+    marginLeft: 18,
+  },
+  profileSection: {
+    paddingBottom: 20,
     paddingHorizontal: 16,
+  },
+  profileHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 24,
     marginBottom: 16,
   },
   avatarContainer: {
     position: 'relative',
   },
   avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    backgroundColor: '#333',
+    borderWidth: 0.5,
+    borderColor: '#555',
   },
   cameraButton: {
     position: 'absolute',
     bottom: 0,
     right: 0,
-    backgroundColor: '#333',
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+    backgroundColor: '#4BDFC3',
+    width: 28,
+    height: 28,
+    borderRadius: 14,
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#000',
   },
   statsContainer: {
     flex: 1,
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-around',
-    marginLeft: 16,
+    marginLeft: 20,
   },
   statItem: {
     alignItems: 'center',
   },
-  statNumber: {
+  statValue: {
     fontSize: 24,
     fontWeight: 'bold',
     color: 'white',
   },
   statLabel: {
     fontSize: 16,
-    color: '#999',
+    color: '#ccc',
+    marginTop: 4,
   },
-  nameContainer: {
+  usernameContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    marginBottom: 16,
+    marginBottom: 24,
   },
-  userName: {
-    fontSize: 20,
+  username: {
+    fontSize: 22,
     fontWeight: 'bold',
     color: 'white',
-    marginRight: 8,
+    marginRight: 10,
   },
   editButton: {
-    padding: 4,
+    opacity: 0.7,
   },
-  socialButtons: {
+  socialButtonsContainer: {
     flexDirection: 'row',
-    paddingHorizontal: 16,
-    marginBottom: 24,
+    justifyContent: 'space-between',
+    width: '100%',
+    paddingHorizontal: 4,
+    marginBottom: 20,
   },
   socialButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#333',
-    borderRadius: 25,
+    justifyContent: 'center',
+    backgroundColor: 'rgba(50,50,50,0.8)',
     paddingVertical: 10,
-    paddingHorizontal: 16,
-    marginRight: 12,
+    paddingHorizontal: 14,
+    borderRadius: 50,
+    flex: 1,
+    marginHorizontal: 3,
   },
-  socialButtonIcon: {
-    marginRight: 8,
+  socialIcon: {
+    marginRight: 6,
   },
   socialButtonText: {
     color: 'white',
-    fontWeight: '500',
-    fontSize: 14,
+    fontSize: 11,
+    fontWeight: '600',
   },
-  tabsContainer: {
-    paddingHorizontal: 16,
-    paddingBottom: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#333',
+  tabBar: {
+    flexDirection: 'row',
+    borderTopWidth: 0.5,
+    borderBottomWidth: 0.5,
+    borderColor: '#333',
+    paddingVertical: 10,
   },
   tabButton: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    justifyContent: 'center',
+    flex: 1,
     alignItems: 'center',
-    marginRight: 16,
-    backgroundColor: '#222',
+    justifyContent: 'center',
+    paddingVertical: 8,
   },
   activeTabButton: {
-    backgroundColor: '#333',
+    borderBottomWidth: 2,
+    borderBottomColor: '#4BDFC3',
   },
-  secondaryTabsContainer: {
+  tabIndicatorRow: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  tabLabelsContainer: {
     flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderBottomColor: '#333',
+    justifyContent: 'space-between',
   },
-  secondaryTab: {
+  tabLabel: {
+    fontSize: 14,
+    color: '#999',
+    paddingHorizontal: 10,
+  },
+  activeTabLabel: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  tabCount: {
+    opacity: 0.7,
+  },
+  emptyStateContainer: {
     flex: 1,
     alignItems: 'center',
-    paddingVertical: 16,
-    position: 'relative',
+    justifyContent: 'center',
+    paddingHorizontal: 30,
+    paddingTop: 50,
+    paddingBottom: 100,
   },
-  activeSecondaryTab: {
-    // Style for active secondary tab
-  },
-  secondaryTabText: {
-    fontSize: 16,
-    color: '#666',
-  },
-  activeSecondaryTabText: {
-    color: 'white',
-    fontWeight: '600',
-  },
-  activeIndicator: {
-    position: 'absolute',
-    bottom: 0,
-    width: '30%',
-    height: 2,
-    backgroundColor: 'white',
-  },
-  tabContent: {
-    flex: 1,
-  },
-  emptyContainer: {
-    flex: 1,
+  emptyStateIcon: {
+    marginBottom: 20,
+    backgroundColor: '#222',
+    width: 100,
+    height: 100,
+    borderRadius: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    borderWidth: 2,
+    borderColor: '#333',
   },
-  emptyText: {
-    color: 'white',
-    fontSize: 20,
+  emptyStateTitle: {
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  emptySubText: {
-    color: '#999',
-    fontSize: 16,
+    color: 'white',
     textAlign: 'center',
-    marginBottom: 24,
+    marginBottom: 15,
   },
-  createButton: {
-    backgroundColor: '#333',
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 24,
-  },
-  createButtonText: {
-    color: 'white',
+  emptyStateSubtitle: {
     fontSize: 16,
-    fontWeight: 'bold',
-  },
-  notificationsContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#111',
-    paddingVertical: 16,
-    paddingHorizontal: 14,
-    borderRadius: 12,
-    marginBottom: 8,
-  },
-  notificationIconContainer: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: '#0E3B43',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  notificationTextContainer: {
-    flex: 1,
-  },
-  notificationTitle: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  notificationSubtitle: {
     color: '#999',
-    fontSize: 16,
-  },
-  storyItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 14,
-    borderBottomWidth: 1,
-    borderBottomColor: '#222',
-  },
-  storyItemImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginRight: 12,
-  },
-  storyItemContent: {
-    flex: 1,
-  },
-  storyItemTitle: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  storyItemSubtitle: {
-    color: '#999',
-    fontSize: 14,
-  },
-  storyItemTime: {
-    color: '#666',
-    fontSize: 14,
-    marginLeft: 8,
+    textAlign: 'center',
+    marginBottom: 40,
   },
 }); 
