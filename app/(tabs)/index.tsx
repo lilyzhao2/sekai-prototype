@@ -61,23 +61,47 @@ const DiscoverNewStoriesSection = () => {
   );
 };
 
-// Bottom component to explore worlds
-const ExploreNewWorldsButton = () => {
+// Bottom component - Modified to link to Wiki
+const GoToWikiButton = () => {
   const router = useRouter();
-  
   return (
     <TouchableOpacity
-      style={styles.exploreWorldsButton}
+      style={styles.bottomActionButton}
       onPress={() => router.push({pathname: '/(tabs)/wiki'})}
     >
-      <LinearGradient
-        colors={['#4BDFC3', '#9EEAEE']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={styles.exploreGradient}
-      >
-        <Ionicons name="planet-outline" size={22} color="#000" />
-        <Text style={styles.exploreButtonText}>Explore New Worlds</Text>
+      <LinearGradient colors={['#4BDFC3', '#9EEAEE']} style={styles.bottomActionGradient}>
+        <Ionicons name="library-outline" size={20} color="#000" />
+        <Text style={styles.bottomActionButtonText}>Wiki</Text>
+      </LinearGradient>
+    </TouchableOpacity>
+  );
+};
+
+const ExploreWorldsButton = () => {
+  const router = useRouter();
+  return (
+    <TouchableOpacity
+      style={styles.bottomActionButton}
+      onPress={() => router.push({pathname: '/(tabs)/explore'})}
+    >
+      <LinearGradient colors={['#888', '#BBB']} style={styles.bottomActionGradient}> 
+        <Ionicons name="planet-outline" size={20} color="#000" />
+        <Text style={styles.bottomActionButtonText}>Explore</Text>
+      </LinearGradient>
+    </TouchableOpacity>
+  );
+};
+
+const InteractButton = () => {
+  const router = useRouter();
+  return (
+    <TouchableOpacity
+      style={styles.bottomActionButton}
+      onPress={() => router.push({pathname: '/(tabs)/for-you'})}
+    >
+      <LinearGradient colors={['#f16522', '#f58549']} style={styles.bottomActionGradient}>
+        <Ionicons name="chatbubbles-outline" size={20} color="#FFF" /> 
+        <Text style={[styles.bottomActionButtonText, { color: '#FFF' }]}>Interact</Text>
       </LinearGradient>
     </TouchableOpacity>
   );
@@ -273,43 +297,94 @@ export default function HomeScreen() {
     }
   ];
 
+  // Sample data for top interactions (NEW)
+  const topInteractions: Story[] = [
+    {
+      id: '40',
+      title: 'Roleplay: Midnight Heist',
+      image: { uri: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1170&auto=format&fit=crop' }, // Placeholder image
+      platform: 'Sekai',
+      genre: 'Roleplay',
+      rating: 4.6,
+      completionStatus: 'Ongoing' // Maybe track sessions?
+    },
+    {
+      id: '41',
+      title: 'Choose Your Adventure: Space Pirate',
+      image: { uri: 'https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=1171&auto=format&fit=crop' }, // Placeholder image
+      platform: 'Sekai',
+      genre: 'Interactive',
+      rating: 4.8,
+      completionStatus: 'Ongoing'
+    },
+    {
+      id: '42',
+      title: 'Collaborative Story: The Lost City',
+      image: { uri: 'https://images.unsplash.com/photo-1527489377706-5ae97e67f65d?q=80&w=1170&auto=format&fit=crop' }, // Placeholder image
+      platform: 'Sekai',
+      genre: 'Collaboration',
+      rating: 4.5,
+      completionStatus: 'Completed'
+    }
+  ];
+
   // Open the story reader
   const openStoryReader = (story: Story) => {
     router.push({
       pathname: '/story-reader',
       params: {
         id: story.id,
+        platform: story.platform || 'Sekai',
         title: story.title,
       }
     });
   };
 
-  // Story card component
+  // Story card component - Enhanced to show progress if available
   const StoryCard: React.FC<StoryCardProps> = ({ story, onPress, showMetrics = false }) => (
     <TouchableOpacity style={styles.storyCard} onPress={onPress}>
       <Image source={story.image} style={styles.storyImage} />
-      <View style={styles.storyTitleBackground}>
-        <Text style={styles.storyTitle} numberOfLines={2}>{story.title}</Text>
+      <LinearGradient colors={['transparent', 'rgba(0,0,0,0.8)']} style={styles.storyTitleGradient}>
+        <Text style={styles.storyTitleText} numberOfLines={2}>{story.title}</Text>
         {showMetrics && (
           <View style={styles.storyMetrics}>
-            <View style={styles.metricItem}>
-              <Ionicons name="book-outline" size={12} color="#BBB" />
-              <Text style={styles.metricText}>{Math.round(story.wordCount ? story.wordCount / 1000 : 0)}K</Text>
-            </View>
-            <View style={styles.metricItem}>
-              <Ionicons name="star" size={12} color="#FFD700" />
-              <Text style={styles.metricText}>{story.rating}</Text>
-            </View>
-            <View style={[
-              styles.statusBadge,
-              { backgroundColor: story.completionStatus === 'Completed' ? '#4BDFC3' : 
-                              story.completionStatus === 'Hiatus' ? '#FFD166' : '#666' }
-            ]}>
-              <Text style={styles.statusText}>{story.completionStatus}</Text>
-            </View>
+            {/* Show Progress if available (Continue Viewing section uses this) */}
+            {story.progress !== undefined && story.lastReadChapter !== undefined && story.chapters !== undefined && (
+              <View style={styles.progressMetricItem}>
+                 <View style={styles.continueReadingProgressBarSmall}> 
+                   <View style={[styles.continueReadingProgressFillSmall, { width: `${story.progress}%` }]} />
+                 </View>
+                 <Text style={styles.progressMetricText}>
+                   {story.progress}% · Ch {story.lastReadChapter}/{story.chapters}
+                 </Text>
+              </View>
+            )}
+            {/* Show Word Count/Rating if progress is not available */}
+            {story.progress === undefined && (
+              <>
+                <View style={styles.metricItem}>
+                  <Ionicons name="book-outline" size={12} color="#BBB" />
+                  <Text style={styles.metricText}>{Math.round(story.wordCount ? story.wordCount / 1000 : 0)}K</Text>
+                </View>
+                <View style={styles.metricItem}>
+                  <Ionicons name="star" size={12} color="#FFD700" />
+                  <Text style={styles.metricText}>{story.rating}</Text>
+                </View>
+              </>
+            )}
+            {/* Always show completion status badge */}
+            {story.completionStatus && (
+              <View style={[styles.statusBadgeSmall, 
+                story.completionStatus === 'Completed' ? styles.statusBadgeCompleted 
+                : story.completionStatus === 'Hiatus' ? styles.statusBadgeHiatus 
+                : styles.statusBadgeOngoing ]
+              }>
+                <Text style={styles.statusTextSmall}>{story.completionStatus}</Text>
+              </View>
+            )}
           </View>
         )}
-      </View>
+      </LinearGradient>
     </TouchableOpacity>
   );
 
@@ -319,68 +394,46 @@ export default function HomeScreen() {
       
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Home</Text>
+          <Text style={styles.headerTitle}>Sekai</Text>
           <TouchableOpacity style={styles.searchButton}>
             <Ionicons name="search" size={24} color="white" />
           </TouchableOpacity>
         </View>
 
-        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-          {/* Add Discover New Stories section at the top */}
+        <ScrollView style={styles.contentScrollView} showsVerticalScrollIndicator={false}>
           <DiscoverNewStoriesSection />
           
-          {/* Continue Reading Section */}
-          <View style={{marginBottom: 24}}>
-            <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12, paddingHorizontal: 16}}>
-              <Text style={styles.sectionTitle}>Continue Reading</Text>
-              <TouchableOpacity>
-                <Text style={{color: '#4BDFC3', fontSize: 14}}>See All</Text>
-              </TouchableOpacity>
+          {/* Updated Section: Continue Viewing */} 
+          {continueReadingStories.length > 0 && (
+            <View style={styles.sectionContainer}>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>Continue Viewing</Text> 
+                <TouchableOpacity>
+                  <Text style={styles.seeAllButton}>See All</Text>
+                </TouchableOpacity>
+              </View>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.horizontalScrollContent}>
+                {continueReadingStories.map((story) => (
+                  <StoryCard // Use the enhanced StoryCard
+                    key={story.id} 
+                    story={story} 
+                    onPress={() => openStoryReader(story)} 
+                    showMetrics={true} // Ensure metrics (including progress) are shown
+                  />
+                ))}
+              </ScrollView>
             </View>
-            
-            {/* Continue Reading Stories */}
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{paddingLeft: 16}}>
-              {continueReadingStories.map((story) => (
-                <View key={story.id} style={styles.continueReadingCard}>
-                  <TouchableOpacity onPress={() => openStoryReader(story)}>
-                    <Image source={story.image} style={styles.continueReadingImage} />
-                    <LinearGradient
-                      colors={['transparent', 'rgba(0,0,0,0.8)']}
-                      style={{position: 'absolute', bottom: 0, left: 0, right: 0, padding: 12}}
-                    >
-                      <Text style={styles.continueReadingCardTitle}>{story.title}</Text>
-                      <View style={{marginTop: 8}}>
-                        <View style={styles.continueReadingProgressBar}>
-                          <View style={[
-                            styles.continueReadingProgressFill, 
-                            { width: story.progress ? `${story.progress}%` : '0%' }
-                          ]} />
-                        </View>
-                        <Text style={styles.continueReadingProgressText}>
-                          {story.progress}% · Ch {story.lastReadChapter}/{story.chapters}
-                        </Text>
-                      </View>
-                      <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 8}}>
-                        <Text style={{color: '#CCC', fontSize: 12}}>{story.timeToRead}</Text>
-                        <Text style={{color: '#CCC', fontSize: 12}}>{story.platform}</Text>
-                      </View>
-                    </LinearGradient>
-                  </TouchableOpacity>
-                </View>
-              ))}
-            </ScrollView>
-          </View>
+          )}
           
-          {/* Top 10 Stories */}
-          <View style={{marginBottom: 24}}>
-            <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12, paddingHorizontal: 16}}>
-              <Text style={styles.sectionTitle}>Top 10 Stories</Text>
+          {/* Top 10 Stories (Horizontal Scroll) */} 
+          <View style={styles.sectionContainer}>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>Top Stories</Text>
               <TouchableOpacity>
-                <Text style={{color: '#4BDFC3', fontSize: 14}}>See All</Text>
+                <Text style={styles.seeAllButton}>See All</Text>
               </TouchableOpacity>
             </View>
-            
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{paddingLeft: 16}}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.horizontalScrollContent}>
               {top10Stories.map((story) => (
                 <StoryCard 
                   key={story.id} 
@@ -392,32 +445,54 @@ export default function HomeScreen() {
             </ScrollView>
           </View>
           
-          {/* Top 10 Worlds */}
-          <View style={{marginBottom: 24}}>
-            <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12, paddingHorizontal: 16}}>
-              <Text style={styles.sectionTitle}>Top 10 Worlds</Text>
+          {/* Top Interactions (Horizontal Scroll) */} 
+          <View style={styles.sectionContainer}>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>Top Interactions</Text>
               <TouchableOpacity>
-                <Text style={{color: '#4BDFC3', fontSize: 14}}>See All</Text>
+                <Text style={styles.seeAllButton}>See All</Text>
               </TouchableOpacity>
             </View>
-            
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{paddingLeft: 16}}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.horizontalScrollContent}>
+              {topInteractions.map((interaction) => (
+                <StoryCard 
+                  key={interaction.id} 
+                  story={interaction} 
+                  onPress={() => { /* Define navigation */ }}
+                  showMetrics={true}
+                />
+              ))}
+            </ScrollView>
+          </View>
+
+          {/* Top 10 Worlds (Horizontal Scroll) */} 
+          <View style={styles.sectionContainer}>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>Top Worlds</Text>
+              <TouchableOpacity>
+                <Text style={styles.seeAllButton}>See All</Text>
+              </TouchableOpacity>
+            </View>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.horizontalScrollContent}>
               {top10Worlds.map((story) => (
                 <StoryCard 
                   key={story.id} 
                   story={story} 
-                  onPress={() => openStoryReader(story)} 
+                  onPress={() => { /* Define navigation */ }}
                   showMetrics={true}
                 />
               ))}
             </ScrollView>
           </View>
           
-          {/* Explore New Worlds Button at the bottom */}
-          <ExploreNewWorldsButton />
+          {/* --- New Bottom Actions Container --- */}
+          <View style={styles.bottomActionsContainer}>
+             <ExploreWorldsButton />
+             <InteractButton />
+             <GoToWikiButton />
+          </View>
           
-          {/* Add spacing at the bottom */}
-          <View style={{ height: 100 }} />
+          <View style={styles.bottomSpacer} />
         </ScrollView>
       </SafeAreaView>
     </View>
@@ -442,10 +517,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingTop: 10,
+    paddingBottom: 10,
   },
   headerTitle: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#FFF',
   },
@@ -457,213 +534,151 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  content: {
+  contentScrollView: {
     flex: 1,
+  },
+  sectionContainer: {
+    marginBottom: 24,
     paddingHorizontal: 16,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
   },
   sectionTitle: {
     fontSize: 20,
     fontWeight: 'bold',
     color: '#FFF',
-    marginBottom: 16,
-    marginTop: 16,
   },
-  continueReadingSection: {
-    marginBottom: 24,
+  seeAllButton: {
+    color: '#4BDFC3',
+    fontSize: 14,
+    fontWeight: '600',
   },
-  continueReadingList: {
-    paddingRight: 16,
-  },
-  continueReadingCard: {
-    width: 300,
-    height: 120,
-    backgroundColor: 'rgba(30,30,30,0.6)',
-    borderRadius: 12,
-    marginRight: 16,
-    overflow: 'hidden',
-    flexDirection: 'row',
-  },
-  continueReadingImage: {
-    width: 80,
-    height: '100%',
-    resizeMode: 'cover',
-  },
-  continueReadingInfo: {
-    flex: 1,
-    padding: 12,
-    justifyContent: 'space-between',
-  },
-  continueReadingCardTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#FFF',
-    marginBottom: 4,
-  },
-  continueReadingMeta: {
-    marginBottom: 8,
-  },
-  continueReadingMetaText: {
-    fontSize: 12,
-    color: '#BBB',
-  },
-  continueReadingProgress: {
-    marginTop: 4,
-  },
-  continueReadingProgressBar: {
-    height: 4,
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    borderRadius: 2,
-    marginBottom: 6,
-    overflow: 'hidden',
-  },
-  continueReadingProgressFill: {
-    height: '100%',
-    backgroundColor: '#4BDFC3',
-    borderRadius: 2,
-  },
-  continueReadingProgressText: {
-    fontSize: 12,
-    color: '#CCC',
-  },
-  gridRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    marginBottom: 16,
+  horizontalScrollContent: {
+    paddingHorizontal: 16,
   },
   storyCard: {
-    width: '48%',
-    height: 200,
-    marginBottom: 16,
-    borderRadius: 12,
+    width: 150,
+    height: 220,
+    marginRight: 12,
+    borderRadius: 10,
     overflow: 'hidden',
-    backgroundColor: 'rgba(30,30,30,0.6)',
+    backgroundColor: '#1C1C1E',
+    position: 'relative',
   },
   storyImage: {
     width: '100%',
-    height: '63%',
+    height: '100%',
     resizeMode: 'cover',
   },
-  storyTitleBackground: {
-    flex: 1,
-    padding: 10,
-    justifyContent: 'space-between',
+  storyTitleGradient: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: 8,
+    paddingTop: 15,
   },
-  storyTitle: {
-    fontSize: 12,
+  storyTitleText: {
+    fontSize: 13,
     fontWeight: 'bold',
     color: '#FFF',
-    lineHeight: 16,
-    marginBottom: 4,
+    lineHeight: 17,
+    marginBottom: 5,
   },
   storyMetrics: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 4,
+    flexWrap: 'wrap',
   },
   metricItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginRight: 8,
+    marginRight: 6,
+    marginBottom: 3,
   },
   metricText: {
     fontSize: 11,
     color: '#BBB',
-    marginLeft: 2,
+    marginLeft: 3,
   },
-  statusBadge: {
+  progressMetricItem: {
+    flexDirection: 'column',
+    marginRight: 6,
+    marginBottom: 3,
+  },
+  continueReadingProgressBarSmall: {
+    height: 4,
+    width: 60,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    borderRadius: 2,
+    overflow: 'hidden',
+    marginBottom: 2,
+  },
+  continueReadingProgressFillSmall: {
+    height: '100%',
+    backgroundColor: '#4BDFC3',
+    borderRadius: 2,
+  },
+  progressMetricText: {
+    fontSize: 10,
+    color: '#CCC',
+  },
+  statusBadgeSmall: {
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,
-    backgroundColor: '#666',
+    marginRight: 6,
+    marginBottom: 3,
   },
-  statusText: {
+  statusBadgeCompleted: { backgroundColor: '#4BDFC3' },
+  statusBadgeOngoing: { backgroundColor: '#666' },
+  statusBadgeHiatus: { backgroundColor: '#FFD166' },
+  statusTextSmall: {
     fontSize: 9,
     color: '#000',
     fontWeight: 'bold',
   },
-  bottomSpacer: {
-    height: 100,
-  },
-  // Discover New Stories styles
-  discoverContainer: {
-    height: 180,
-    marginHorizontal: 16,
-    marginBottom: 24,
-    borderRadius: 16,
-    overflow: 'hidden',
-  },
-  discoverBackground: {
-    width: '100%',
-    height: '100%',
-  },
-  discoverGradient: {
-    width: '100%',
-    height: '100%',
-  },
-  discoverContent: {
-    flex: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 20,
-  },
-  discoverTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: 'white',
-    marginBottom: 8,
-    textShadowColor: 'rgba(0,0,0,0.5)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 3,
-  },
-  discoverSubtitle: {
-    fontSize: 16,
-    color: 'rgba(255,255,255,0.8)',
-    marginBottom: 16,
-    textShadowColor: 'rgba(0,0,0,0.5)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 2,
-  },
-  discoverButton: {
+  bottomSpacer: { height: 120 },
+  discoverContainer: { height: 180, marginHorizontal: 16, marginBottom: 24, borderRadius: 16, overflow: 'hidden' },
+  discoverBackground: { width: '100%', height: '100%' },
+  discoverGradient: { width: '100%', height: '100%' },
+  discoverContent: { flex: 1, justifyContent: 'center', paddingHorizontal: 20 },
+  discoverTitle: { fontSize: 24, fontWeight: 'bold', color: 'white', marginBottom: 8, textShadowColor: 'rgba(0,0,0,0.5)', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 3 },
+  discoverSubtitle: { fontSize: 16, color: 'rgba(255,255,255,0.8)', marginBottom: 16, textShadowColor: 'rgba(0,0,0,0.5)', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 2 },
+  discoverButton: { flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.2)', paddingVertical: 8, paddingHorizontal: 16, borderRadius: 20, alignSelf: 'flex-start' },
+  discoverButtonText: { color: 'white', fontSize: 14, fontWeight: '600', marginRight: 8 },
+  bottomActionsContainer: {
     flexDirection: 'row',
+    justifyContent: 'space-around',
     alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    paddingVertical: 8,
     paddingHorizontal: 16,
-    borderRadius: 20,
-    alignSelf: 'flex-start',
-  },
-  discoverButtonText: {
-    color: 'white',
-    fontSize: 14,
-    fontWeight: '600',
-    marginRight: 8,
-  },
-  
-  // Explore New Worlds button styles
-  exploreWorldsButton: {
-    marginHorizontal: 16,
-    marginTop: 30,
+    paddingVertical: 10,
+    marginTop: 20,
     marginBottom: 10,
-    borderRadius: 28,
-    overflow: 'hidden',
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
   },
-  exploreGradient: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 14,
-    paddingHorizontal: 20,
+  bottomActionButton: { 
+    flex: 1,
+    marginHorizontal: 5,
+    borderRadius: 20,
+    overflow: 'hidden', 
+    elevation: 2, 
+    shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.15, shadowRadius: 2 
   },
-  exploreButtonText: {
-    color: '#000',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginLeft: 10,
+  bottomActionGradient: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    justifyContent: 'center', 
+    paddingVertical: 10,
+    paddingHorizontal: 12 
   },
-  // ... existing styles ...
+  bottomActionButtonText: { 
+    color: '#000', 
+    fontSize: 14,
+    fontWeight: 'bold', 
+    marginLeft: 6 
+  },
 });
